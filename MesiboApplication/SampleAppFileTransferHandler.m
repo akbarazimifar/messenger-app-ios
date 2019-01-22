@@ -67,7 +67,7 @@
     };
     
     MesiboHttp *http = [MesiboHttp new];
-    http.url = [SampleAPIInstance getApiUrl];
+    http.url = [SampleAPIInstance getUploadUrl];
     http.uploadPhAsset = file.asset;
     http.uploadLocalIdentifier = file.localIdentifier;
     http.uploadFile = [file getPath];
