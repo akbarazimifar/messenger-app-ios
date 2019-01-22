@@ -19,6 +19,9 @@
 #define APNTOKEN_KEY @"apntoken"
 #define GOOGLE_KEY  @"googlekey"
 
+#define UPLOADURL_KEY @"uploadurl"
+#define DOWNLOADURL_KEY @"downloadurl"
+
 
 @interface SampleAPI ( /* class extension */ )
 {
@@ -105,12 +108,12 @@
     mContactTimestamp = 0;
     mToken = [mUserDefaults objectForKey:@"token"];
     mInvite = [mUserDefaults objectForKey:@"invite"];
-    NSString *fileUrl = [mUserDefaults objectForKey:@"downloadurl"];
+    NSString *fileUrl = [mUserDefaults objectForKey:DOWNLOADURL_KEY];
     if([fileUrl length] > 5) {
         mDownloadUrl = fileUrl;
     }
     
-    fileUrl = [mUserDefaults objectForKey:@"uploadurl"];
+    fileUrl = [mUserDefaults objectForKey:UPLOADURL_KEY];
     if([fileUrl length] > 5) {
         mUploadUrl = fileUrl;
     }
@@ -306,9 +309,9 @@
 -(void)save {
     [mUserDefaults setObject:mToken forKey:@"token"];
     if(mDownloadUrl)
-        [mUserDefaults setObject:mDownloadUrl forKey:@"downloadurl"];
+        [mUserDefaults setObject:mDownloadUrl forKey:DOWNLOADURL_KEY];
     if(mUploadUrl)
-        [mUserDefaults setObject:mUploadUrl forKey:@"uploadurl"];
+        [mUserDefaults setObject:mUploadUrl forKey:UPLOADURL_KEY];
     
     if(mInvite)
         [mUserDefaults setObject:mInvite forKey:@"invite"];
@@ -400,10 +403,10 @@
         mToken = (NSString *)[returnedDict objectForKeyOrNil:@"token"];
         
         if(!mDownloadUrl || [mDownloadUrl length]  == 0)
-            mDownloadUrl = (NSString *)[returnedDict objectForKeyOrNil:@"downloadurl"];
+            mDownloadUrl = (NSString *)[returnedDict objectForKeyOrNil:DOWNLOADURL_KEY];
         
         if(!mUploadUrl || [mUploadUrl length]  == 0)
-            mUploadUrl = (NSString *)[returnedDict objectForKeyOrNil:@"uploadurl"];
+            mUploadUrl = (NSString *)[returnedDict objectForKeyOrNil:UPLOADURL_KEY];
         
         mPhone = (NSString *)[returnedDict objectForKeyOrNil:@"phone"];
         
