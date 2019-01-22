@@ -38,6 +38,7 @@
     NSString *mDownloadUrl;
     NSString *mUploadUrl;
     NSString *mAkClientToken;
+    NSString *mAkAid;
     int mApnTokenType;
     NSString *mGoogleKey;
     BOOL mApnTokenSent;
@@ -73,6 +74,7 @@
     mApnTokenSent = NO;
     mGoogleKey = nil;
     mAkClientToken = nil;
+    mAkAid = nil;
     
     mApiUrl = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"MessengerApiUrl"];
     
@@ -102,6 +104,8 @@
     if (!mAkClientToken || [mAkClientToken length] < 8) {
         NSLog(@"************* INVALID AccountKit Client Token - set a valid Key in AccountKitClientToken field in Info.plist ************* ");
     }
+    
+    mAkAid = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"FacebookAppID"];
     
     
     mUserDefaults = [NSUserDefaults standardUserDefaults];
@@ -246,6 +250,9 @@
                                              [mContacts removeAllObjects];
                                      }
                                      
+                                 }
+                                 else {
+                                     return NO;
                                  }
                                  
                              }
@@ -799,7 +806,9 @@
     NSMutableDictionary *post = [[NSMutableDictionary alloc] init];
     [post setValue:@"login" forKey:@"op"];
     [post setValue:akToken forKey:@"aktoken"];
-    [post setValue:mAkClientToken forKey:@"ct"];
+    [post setValue:mAkClientToken forKey:@"akct"];
+    [post setValue:mAkAid forKey:@"akaid"];
+    
     
     
     NSString *packageName = [[NSBundle mainBundle] bundleIdentifier];
