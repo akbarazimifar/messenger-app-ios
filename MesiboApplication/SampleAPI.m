@@ -32,7 +32,9 @@
     NSString *mDeviceType;
     NSString *mApnToken;
     NSString *mApiUrl;
-    NSString *mFileUrl;
+    NSString *mDownloadUrl;
+    NSString *mUploadUrl;
+    NSString *mAkClientToken;
     int mApnTokenType;
     NSString *mGoogleKey;
     BOOL mApnTokenSent;
@@ -57,24 +59,35 @@
     return myInstance;
 }
 
+-(BOOL) isValidUrl:(NSString *)url {
+    return ([url hasPrefix:@"http://"] || [url hasPrefix:@"https://"]);
+}
+
 -(void)initialize {
     
     mApnToken = nil;
     mApnTokenType = 0;
     mApnTokenSent = NO;
     mGoogleKey = nil;
+    mAkClientToken = nil;
     
-    mApiUrl = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"MesiboSampleApiUrl"];
+    mApiUrl = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"MessengerApiUrl"];
     
-    if (!mApiUrl || (![mApiUrl hasPrefix:@"http://"] && ![mApiUrl hasPrefix:@"https://"])) {
-        NSLog(@"************* INVALID URL - set a valid URL in MesiboSampleApiUrl field in Info.plist ************* ");
+    if (!mApiUrl || ![self isValidUrl:mApiUrl]) {
+        NSLog(@"************* INVALID URL - set a valid URL in MessengerApiUrl field in Info.plist ************* ");
+    }
+    
+    mUploadUrl = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"MessengerUploadUrl"];
+    
+    if (!mUploadUrl || ![self isValidUrl:mUploadUrl]) {
+        mUploadUrl = nil;
     }
     
     //Default file URL, can be overridden by server
-    mFileUrl = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"MesiboSampleFileUrl"];
+    mDownloadUrl = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"MessengerDownloadUrl"];
     
-    if (!mFileUrl || (![mFileUrl hasPrefix:@"http://"] && ![mFileUrl hasPrefix:@"https://"])) {
-        NSLog(@"************* INVALID URL - set a valid URL in MesiboSampleFileUrl field in Info.plist ************* ");
+    if (!mDownloadUrl || ![self isValidUrl:mDownloadUrl]) {
+        mDownloadUrl = nil;
     }
     
     mGoogleKey = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"GoogleMapKey"];
@@ -82,13 +95,24 @@
         NSLog(@"************* INVALID GOOGLE MAP KEY - set a valid Key in GoogleMapKey field in Info.plist ************* ");
     }
     
+    mAkClientToken = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"AccountKitClientToken"];
+    if (!mAkClientToken || [mAkClientToken length] < 8) {
+        NSLog(@"************* INVALID AccountKit Client Token - set a valid Key in AccountKitClientToken field in Info.plist ************* ");
+    }
+    
+    
     mUserDefaults = [NSUserDefaults standardUserDefaults];
     mContactTimestamp = 0;
     mToken = [mUserDefaults objectForKey:@"token"];
     mInvite = [mUserDefaults objectForKey:@"invite"];
-    NSString *fileUrl = [mUserDefaults objectForKey:@"fileurl"];
+    NSString *fileUrl = [mUserDefaults objectForKey:@"downloadurl"];
     if([fileUrl length] > 5) {
-        mFileUrl = fileUrl;
+        mDownloadUrl = fileUrl;
+    }
+    
+    fileUrl = [mUserDefaults objectForKey:@"uploadurl"];
+    if([fileUrl length] > 5) {
+        mUploadUrl = fileUrl;
     }
     
     mPhone = nil;
@@ -268,14 +292,23 @@
 }
 
 -(NSString *) getFileUrl {
-    return mFileUrl;
+    return mDownloadUrl;
+}
+
+-(NSString *) getUploadUrl {
+    if(mUploadUrl && [mUploadUrl length] > 0)
+        return mUploadUrl;
+    
+    return mApiUrl;
 }
 
 
 -(void)save {
     [mUserDefaults setObject:mToken forKey:@"token"];
-    if(mFileUrl)
-        [mUserDefaults setObject:mFileUrl forKey:@"fileurl"];
+    if(mDownloadUrl)
+        [mUserDefaults setObject:mDownloadUrl forKey:@"downloadurl"];
+    if(mUploadUrl)
+        [mUserDefaults setObject:mUploadUrl forKey:@"uploadurl"];
     
     if(mInvite)
         [mUserDefaults setObject:mInvite forKey:@"invite"];
@@ -365,7 +398,13 @@
     
     if([op isEqualToString:@"login"]) {
         mToken = (NSString *)[returnedDict objectForKeyOrNil:@"token"];
-        mFileUrl = (NSString *)[returnedDict objectForKeyOrNil:@"fileurl"];
+        
+        if(!mDownloadUrl || [mDownloadUrl length]  == 0)
+            mDownloadUrl = (NSString *)[returnedDict objectForKeyOrNil:@"downloadurl"];
+        
+        if(!mUploadUrl || [mUploadUrl length]  == 0)
+            mUploadUrl = (NSString *)[returnedDict objectForKeyOrNil:@"uploadurl"];
+        
         mPhone = (NSString *)[returnedDict objectForKeyOrNil:@"phone"];
         
         
@@ -757,6 +796,8 @@
     NSMutableDictionary *post = [[NSMutableDictionary alloc] init];
     [post setValue:@"login" forKey:@"op"];
     [post setValue:akToken forKey:@"aktoken"];
+    [post setValue:mAkClientToken forKey:@"ct"];
+    
     
     NSString *packageName = [[NSBundle mainBundle] bundleIdentifier];
     [post setValue:packageName forKey:@"appid"];

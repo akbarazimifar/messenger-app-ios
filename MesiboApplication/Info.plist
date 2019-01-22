@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>AccountKitClientToken</key>
-	<string>&lt;ADDYOURTOKEN&gt;</string>
+	<string>e30be3170ec9dadb1e886b02d91176af</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
@@ -34,11 +34,11 @@
 	<key>CFBundleVersion</key>
 	<string>1</string>
 	<key>FacebookAppID</key>
-	<string>&lt;ADDYOURKEY&gt;</string>
+	<string>783452565354512</string>
 	<key>FacebookDisplayName</key>
-	<string>Mesibo</string>
+	<string>Mesibo Messenger</string>
 	<key>GoogleMapKey</key>
-	<string>&lt;ADDYOURKEY&gt;</string>
+	<string>AIzaSyC0Kfvga9qdjIzfBYN9ZrGbQeNTy69WCuI</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>LSApplicationCategoryType</key>
@@ -68,10 +68,12 @@
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-	<key>MesiboSampleApiUrl</key>
+	<key>MessengerApiUrl</key>
 	<string>https://app.mesibo.com/api.php</string>
-	<key>MesiboSampleFileUrl</key>
+	<key>MessengerDownloadUrl</key>
 	<string>https://appimages.mesibo.com/</string>
+	<key>MessengerUploadUrl</key>
+	<string></string>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSExceptionDomains</key>
