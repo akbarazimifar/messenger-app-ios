@@ -11,10 +11,13 @@ Mesibo Messenger is an open-source app with real-time messaging, voice and video
 - Online status (presence) and real-time profile update
 - Push notifications
 
+
 Stable versions are available through Google Play Store and Apple App Srore:
+
 <a href="https://play.google.com/store/apps/details?id=com.mesibo.mesiboapplication"><img
   alt="Get it on Google Play" height="80"
   src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png" /></a>
+
 <a href="https://itunes.apple.com/us/app/mesibo-realtime-messaging-voice-video/id1222921751"><img
   alt="Get it on Apple App Store" height="80"
   src="https://mesibo.com/documentation/images/iphone-app.png" /></a>
@@ -33,7 +36,6 @@ To download, open a terminal and issue following commands:
 ### Download the code as a zip file
 You can also download the complete iOS Messenger source code as a zip file. Although simple, the downsize of this approach is that you will have to download the complete source code everytime it is updated on the repository. 
 
-{: .warning}
 > WARNING! zip file will be quite large due to inclusion of bitcode enabled frameworks. `git clone` is the recommended approach.
 
 ### Stay Up-to-date
