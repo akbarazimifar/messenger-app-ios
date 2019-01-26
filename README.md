@@ -18,7 +18,7 @@ Stable versions are available through Google Play Store and Apple App Srore:
   alt="Get it on Google Play" height="80"
   src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png" /></a> <a href="https://itunes.apple.com/us/app/mesibo-realtime-messaging-voice-video/id1222921751"><img
   alt="Get it on Apple App Store" height="60"
-  src="https://mesibo.com/documentation/images/iphone-app.png" /></a>
+  src="https://mesibo.com/documentation/images/app/apple_app_store.png" /></a>
 
 ## Downloading the Source Code
 
