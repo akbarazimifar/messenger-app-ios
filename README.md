@@ -42,7 +42,7 @@ Whatever approach you take to download the code, it is important to stay up-to-d
 
 Before we dive into building and running a fully featured Messenger for iOS, ensure that you've read the following.
 
- - XCode Installed
+ - Latest Xcode Installed
  - An iPhone Device
 
 Building the Messenger source code is as simple as:
