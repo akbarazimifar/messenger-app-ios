@@ -18,15 +18,15 @@
 
 #define APNTOKEN_KEY @"apntoken"
 #define GOOGLE_KEY  @"googlekey"
-
-#define UPLOADURL_KEY @"uploadurl"
-#define DOWNLOADURL_KEY @"downloadurl"
+#define FILEURL_KEY  @"fileurl"
+#define INVITE_KEY  @"inivte"
+#define CC_KEY  @"cc"
 
 
 @interface SampleAPI ( /* class extension */ )
 {
     NSUserDefaults *mUserDefaults;
-    NSString *mToken, *mPhone, *mInvite;
+    NSString *mToken, *mPhone, *mInvite, *mCc;
     uint64_t mContactTimestamp;
     SampleAPI_LogoutBlock mLogoutBlock;
     BOOL mSyncPending;
@@ -35,14 +35,12 @@
     NSString *mDeviceType;
     NSString *mApnToken;
     NSString *mApiUrl;
-    NSString *mDownloadUrl;
-    NSString *mUploadUrl;
+    NSString *mFileUrl;
     NSString *mAkClientToken;
     NSString *mAkAid;
     int mApnTokenType;
     NSString *mGoogleKey;
     BOOL mApnTokenSent;
-    //-(int) updateSentMessagesProfile;
     void (^mAPNCompletionHandler)(UIBackgroundFetchResult);
 }
 
@@ -75,24 +73,12 @@
     mGoogleKey = nil;
     mAkClientToken = nil;
     mAkAid = nil;
+    mInvite = nil;
     
     mApiUrl = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"MessengerApiUrl"];
     
     if (!mApiUrl || ![self isValidUrl:mApiUrl]) {
         NSLog(@"************* INVALID URL - set a valid URL in MessengerApiUrl field in Info.plist ************* ");
-    }
-    
-    mUploadUrl = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"MessengerUploadUrl"];
-    
-    if (!mUploadUrl || ![self isValidUrl:mUploadUrl]) {
-        mUploadUrl = nil;
-    }
-    
-    //Default file URL, can be overridden by server
-    mDownloadUrl = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"MessengerDownloadUrl"];
-    
-    if (!mDownloadUrl || ![self isValidUrl:mDownloadUrl]) {
-        mDownloadUrl = nil;
     }
     
     mGoogleKey = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"GoogleMapKey"];
@@ -107,22 +93,13 @@
     
     mAkAid = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"FacebookAppID"];
     
-    
     mUserDefaults = [NSUserDefaults standardUserDefaults];
     mContactTimestamp = 0;
     mToken = [mUserDefaults objectForKey:@"token"];
-    mInvite = [mUserDefaults objectForKey:@"invite"];
-    NSString *fileUrl = [mUserDefaults objectForKey:DOWNLOADURL_KEY];
-    if([fileUrl length] > 5) {
-        mDownloadUrl = fileUrl;
-    }
     
-    fileUrl = [mUserDefaults objectForKey:UPLOADURL_KEY];
-    if([fileUrl length] > 5) {
-        mUploadUrl = fileUrl;
-    }
     
     mPhone = nil;
+    mCc = nil;
     mSyncPending = YES;
     mResetSyncedContacts = NO;
     
@@ -144,6 +121,15 @@
     mLogoutBlock = logOutBlock;
 }
 
+-(NSString *)getSavedValue:(NSString *)value key:(NSString *)key {
+    if(value) {
+        [MesiboInstance setKey:value value:key];
+        return value;
+    }
+    
+    return [MesiboInstance readKey:key];
+}
+
 #define SYNCEDCONTACTS_KEY @"syncedcontacts"
 
 -(void) startMesibo:(BOOL) resetProfiles {
@@ -156,8 +142,6 @@
     [MesiboInstance setPath:appdir];
     
     [MesiboInstance setAccessToken:[SampleAPIInstance getToken]];
-    
-    
     [MesiboInstance setDatabase:@"test.db" resetTables:resetProfiles?MESIBO_DBTABLE_PROFILES:0]; //TBD, change this after testing
     
     if(resetProfiles) {
@@ -166,6 +150,10 @@
     }
     
     [self initAutoDownload];
+    mCc = [self getSavedValue:mCc key:CC_KEY];
+    
+    if(mCc && [mCc intValue] > 0)
+        [ContactUtilsInstance setCountryCode:[mCc intValue]];
     
     [GMSServices provideAPIKey:mGoogleKey];
     [GMSPlacesClient provideAPIKey:mGoogleKey];
@@ -286,8 +274,11 @@
 }
 
 -(NSString *) getInvite {
-    if(mInvite) return mInvite;
-    return @"Make free voice and video calls, download mesibo from https://mesibo.com ";
+    if(mInvite && [mInvite length] > 6)
+        return mInvite;
+    
+    mInvite = [self getSavedValue:nil key:INVITE_KEY];
+    return mInvite;
 }
 
 -(NSString *) getToken {
@@ -302,27 +293,15 @@
 }
 
 -(NSString *) getFileUrl {
-    return mDownloadUrl;
-}
-
--(NSString *) getUploadUrl {
-    if(mUploadUrl && [mUploadUrl length] > 0)
-        return mUploadUrl;
+    if(mFileUrl && [mFileUrl length] > 6)
+        return mFileUrl;
     
-    return mApiUrl;
+    mFileUrl = [self getSavedValue:nil key:FILEURL_KEY];
+    return mFileUrl;
 }
-
 
 -(void)save {
     [mUserDefaults setObject:mToken forKey:@"token"];
-    if(mDownloadUrl)
-        [mUserDefaults setObject:mDownloadUrl forKey:DOWNLOADURL_KEY];
-    if(mUploadUrl)
-        [mUserDefaults setObject:mUploadUrl forKey:UPLOADURL_KEY];
-    
-    if(mInvite)
-        [mUserDefaults setObject:mInvite forKey:@"invite"];
-    
     [mUserDefaults setObject:[NSNumber numberWithUnsignedLongLong:mContactTimestamp] forKey:@"ts"];
     [mUserDefaults synchronize];
 }
@@ -398,32 +377,28 @@
         return NO;
     }
     
-    NSString *i = (NSString *)[returnedDict objectForKeyOrNil:@"invite"];
-    if(i) {
-        if(!mInvite || ![mInvite isEqualToString:i]) {
-            mInvite = i;
-            [self save];
-        }
+    NSString *temp = (NSString *)[returnedDict objectForKeyOrNil:@"invite"];
+    if(temp && [temp length] >0) {
+        mInvite = [self getSavedValue:temp key:INVITE_KEY];
     }
+    
+    temp = (NSString *)[returnedDict objectForKeyOrNil:@"uploadurl"];
+    if(temp && [temp length] > 0)
+        mFileUrl = [self getSavedValue:temp key:FILEURL_KEY];
     
     if([op isEqualToString:@"login"]) {
         mToken = (NSString *)[returnedDict objectForKeyOrNil:@"token"];
-        
-        if(!mDownloadUrl || [mDownloadUrl length]  == 0)
-            mDownloadUrl = (NSString *)[returnedDict objectForKeyOrNil:DOWNLOADURL_KEY];
-        
-        if(!mUploadUrl || [mUploadUrl length]  == 0)
-            mUploadUrl = (NSString *)[returnedDict objectForKeyOrNil:UPLOADURL_KEY];
-        
         mPhone = (NSString *)[returnedDict objectForKeyOrNil:@"phone"];
+        mCc = (NSString *)[returnedDict objectForKeyOrNil:@"cc"];
         
-        
+
         if(![SampleAPI isEmpty:mToken]) {
             mContactTimestamp = 0;
             [self save];
             
             mResetSyncedContacts = YES;
             mSyncPending = YES;
+            [ContactUtilsInstance setCountryCode:[mCc intValue]];
             [ContactUtilsInstance syncReset];
             [MesiboInstance reset];
             
@@ -433,7 +408,6 @@
             
             [self createContact:returnedDict serverts:serverts selfProfile:YES refresh:NO visibility:VISIBILITY_VISIBLE];
             
-            //[self startSync:YES]; //This will be done from login block after getting contact permission (appDelgate.m)
         }
         
     } else if([op isEqualToString:@"getcontacts"]) {
@@ -767,6 +741,7 @@
     mApnTokenSent = NO;
     mToken = @"";
     mPhone = nil;
+    mCc = nil;
     mContactTimestamp = 0;
     [self save];
     [MesiboInstance reset];

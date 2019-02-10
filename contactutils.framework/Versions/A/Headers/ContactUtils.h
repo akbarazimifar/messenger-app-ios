@@ -39,6 +39,7 @@ typedef void (^onContactPermissionBlock)(BOOL result);
 -(NSString *) stripPhone:(NSString *)phone;
 -(NSString *) getFQN:(NSString *)phone;
 -(int) getCountryCode;
+-(void) setCountryCode:(int)code;
 -(void) syncReset;
 -(void) sync:(NSString *)savedContacts onContact:(onContactBlock)onContactBlock onSave:(onContactSaveBlock)onSaveBlock ;
 -(void) synced:(NSArray *)numbers type:(int) type;
