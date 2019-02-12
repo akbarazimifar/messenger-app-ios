@@ -46,7 +46,8 @@ typedef void (^SampleAPI_onResponse)(int result, NSDictionary *response);
 -(void) setOnLogout:(SampleAPI_LogoutBlock)logOutBlock;
 -(NSString *) getToken;
 -(NSString *) getApiUrl;
--(NSString *) getFileUrl;
+-(NSString *) getUploadUrl;
+-(NSString *) getDownloadUrl;
 -(NSString *) getInvite;
 
 -(void) startMesibo:(BOOL) resetProfiles;

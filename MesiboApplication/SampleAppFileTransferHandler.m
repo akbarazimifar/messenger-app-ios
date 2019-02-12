@@ -67,7 +67,7 @@
     };
     
     MesiboHttp *http = [MesiboHttp new];
-    http.url = [SampleAPIInstance getFileUrl];
+    http.url = [SampleAPIInstance getUploadUrl];
     http.uploadPhAsset = file.asset;
     http.uploadLocalIdentifier = file.localIdentifier;
     http.uploadFile = [file getPath];
@@ -94,7 +94,7 @@
     NSString *url = [file getUrl];
     
     if (![url hasPrefix:@"http://"] && ![url hasPrefix:@"https://"]) {
-        url = [[SampleAPIInstance getFileUrl] stringByAppendingString:url];
+        url = [[SampleAPIInstance getDownloadUrl] stringByAppendingString:url];
     }
     
     Mesibo_onHTTPProgress handler = ^BOOL(MesiboHttp *http, int state, int progress) {
