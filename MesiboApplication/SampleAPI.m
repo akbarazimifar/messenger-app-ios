@@ -18,7 +18,8 @@
 
 #define APNTOKEN_KEY @"apntoken"
 #define GOOGLE_KEY  @"googlekey"
-#define FILEURL_KEY  @"fileurl"
+#define UPLOADURL_KEY  @"upload"
+#define DOWNLOADURL_KEY  @"download"
 #define INVITE_KEY  @"inivte"
 #define CC_KEY  @"cc"
 
@@ -35,7 +36,8 @@
     NSString *mDeviceType;
     NSString *mApnToken;
     NSString *mApiUrl;
-    NSString *mFileUrl;
+    NSString *mUploadUrl;
+    NSString *mDownloadUrl;
     NSString *mAkClientToken;
     NSString *mAkAid;
     int mApnTokenType;
@@ -292,12 +294,20 @@
     return mApiUrl;
 }
 
--(NSString *) getFileUrl {
-    if(mFileUrl && [mFileUrl length] > 6)
-        return mFileUrl;
+-(NSString *) getUploadUrl {
+    if(mUploadUrl && [mUploadUrl length] > 6)
+        return mUploadUrl;
     
-    mFileUrl = [self getSavedValue:nil key:FILEURL_KEY];
-    return mFileUrl;
+    mUploadUrl = [self getSavedValue:nil key:UPLOADURL_KEY];
+    return mUploadUrl;
+}
+
+-(NSString *) getDownloadUrl {
+    if(mDownloadUrl && [mDownloadUrl length] > 6)
+        return mDownloadUrl;
+    
+    mDownloadUrl = [self getSavedValue:nil key:DOWNLOADURL_KEY];
+    return mDownloadUrl;
 }
 
 -(void)save {
@@ -382,9 +392,11 @@
         mInvite = [self getSavedValue:temp key:INVITE_KEY];
     }
     
-    temp = (NSString *)[returnedDict objectForKeyOrNil:@"uploadurl"];
-    if(temp && [temp length] > 0)
-        mFileUrl = [self getSavedValue:temp key:FILEURL_KEY];
+    NSDictionary *urls = (NSDictionary *)[returnedDict objectForKeyOrNil:@"urls"];
+    if(urls) {
+        mUploadUrl = [self getSavedValue:(NSString *)[urls objectForKeyOrNil:@"upload"] key:UPLOADURL_KEY];
+        mDownloadUrl = [self getSavedValue:(NSString *)[urls objectForKeyOrNil:@"download"] key:DOWNLOADURL_KEY];
+    }
     
     if([op isEqualToString:@"login"]) {
         mToken = (NSString *)[returnedDict objectForKeyOrNil:@"token"];
