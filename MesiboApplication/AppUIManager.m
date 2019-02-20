@@ -59,9 +59,7 @@ UIViewController *_mAppParent = nil;
         parent = _mAppParent;
     
     
-    if(parent.navigationController)
-        [parent.navigationController pushViewController:vc animated:YES];
-    else
+  
         [parent presentViewController:vc animated:YES completion:nil];
     
 }
