@@ -155,6 +155,7 @@
 
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
+    [MesiboInstance setAppInForeground:self screenId:0 foreground:NO];
 }
 
 
