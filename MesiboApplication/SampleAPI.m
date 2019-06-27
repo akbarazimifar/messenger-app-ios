@@ -1017,27 +1017,7 @@
         mApnTokenSent = YES; // so that next time it will not be called
     }
     
-    NSString *prevtoken = [MesiboInstance readKey:APNTOKEN_KEY];
-    if(prevtoken && [prevtoken isEqualToString:mApnToken]) {
-        mApnTokenSent = YES;
-        return;
-    }
-    
-    
-    NSMutableDictionary *post = [[NSMutableDictionary alloc] init];
-    [post setValue:@"setnotify" forKey:@"op"];
-    [post setValue:mToken forKey:@"token"];
-    [post setValue:mApnToken  forKey:@"notifytoken"];
-    [post setValue:[self isAppStoreBuild]?@"1":@"0"  forKey:@"prod"]; //production version
-    [post setValue:mApnTokenType?@"1":@"0"  forKey:@"tokentype"];
-    
-    
-    [self invokeApi:post filePath:nil handler:^(int result, NSDictionary *response) {
-        if(result == MESIBO_RESULT_OK)
-            [MesiboInstance setKey:APNTOKEN_KEY value:mApnToken];
-        else if(response == nil)
-            mApnTokenSent = NO; // for next time
-    }];
+    [MesiboInstance setPushToken:mApnToken];
 }
 
 -(void) addContacts:(NSArray *)profiles hidden:(BOOL)hidden {
