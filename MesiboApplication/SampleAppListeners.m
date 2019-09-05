@@ -190,6 +190,9 @@
 }
 
 -(BOOL) Mesibo_OnMessageFilter:(MesiboParams *)params direction:(int)direction data:(NSData *)data {
+    if(1 == direction)
+        return YES;
+    
     // using it for notifications
     if(1 != params.type)
         return YES;
