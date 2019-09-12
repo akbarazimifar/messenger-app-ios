@@ -59,9 +59,18 @@
     [SampleAPIInstance setPushToken:sbuf];
 }
 
+#if 0
 - (void)pushRegistry:(PKPushRegistry *)registry didReceiveIncomingPushWithPayload:(PKPushPayload *)payload forType:(PKPushType)type {
     
     [MesiboInstance setAppInForeground:nil screenId:-1 foreground:YES];
     
+}
+#endif
+
+
+-(void)pushRegistry:(PKPushRegistry *)registry didReceiveIncomingPushWithPayload:(PKPushPayload *)payload forType:(PKPushType)type withCompletionHandler:(void (^)(void))completion {
+    
+    [MesiboInstance setPushRegistryCompletion:completion];
+    [MesiboInstance setAppInForeground:nil screenId:-1 foreground:YES];
 }
 @end
