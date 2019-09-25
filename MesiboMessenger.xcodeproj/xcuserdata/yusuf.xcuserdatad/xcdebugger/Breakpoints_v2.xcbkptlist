@@ -217,12 +217,28 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "MesiboApplication/SampleAppListeners.m"
-            timestampString = "571644503.671523"
+            timestampString = "590738228.652426"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "216"
             endingLineNumber = "216"
             landmarkName = "-Mesibo_OnMessageFilter:direction:data:"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "MesiboApplication/SamplePushKitNotify.m"
+            timestampString = "590738228.6525511"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "59"
+            endingLineNumber = "59"
+            landmarkName = "-pushRegistry:didUpdatePushCredentials:forType:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
