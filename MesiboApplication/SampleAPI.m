@@ -43,6 +43,7 @@
     int mApnTokenType;
     NSString *mGoogleKey;
     BOOL mApnTokenSent;
+    BOOL mSyncStarted;
     void (^mAPNCompletionHandler)(UIBackgroundFetchResult);
 }
 
@@ -104,6 +105,7 @@
     mCc = nil;
     mSyncPending = YES;
     mResetSyncedContacts = NO;
+    mSyncStarted = NO;
     
     mDeviceType = [NSString stringWithFormat:@"%d", [MesiboInstance getDeviceType]];
     
@@ -113,6 +115,13 @@
         [self startMesibo:NO];
         
         [ContactUtilsInstance initPhonebook:^(BOOL result) {
+            if(!result) {
+                //permission denied
+                [AppAlert showDialogue:@"Mesibo requires contact permission so that you can communicate with your contacts. You MUST restart App and grant necessary permissions to continue!" withTitle:@"Permission Required" handler:^{
+                    //
+                }];
+                
+            }
             [self startSync];
         }];
         
@@ -190,17 +199,21 @@
 
 -(void) startContactSync {
     
+    if(mSyncStarted)
+        return;
     
-    NSString *syncedContacts = [MesiboInstance readKey:SYNCEDCONTACTS_KEY];
+    mSyncStarted = YES;
     
     //syncedContacts = nil;
     //syncedContacts = nil;
     
+    if(nil == self)
+        return;
     
     //TBD, we need to fix contact utils to run in this thread
     // We must run in UI thread else contact change is not triggered
     [MesiboInstance runInThread:YES handler: ^{
-        
+         NSString *syncedContacts = [MesiboInstance readKey:SYNCEDCONTACTS_KEY];
         __block NSMutableArray *mContacts = [NSMutableArray new];
         __block NSMutableArray *mDeletedContacts = [NSMutableArray new];
         
@@ -236,7 +249,7 @@
                                  if([self getContacts:mContacts hidden:NO handler:nil]) {
                                      //TBD. crash here
                                      @synchronized (self) {
-                                         if(mContacts)
+                                         if(mContacts && [mContacts count] > 0)
                                              [mContacts removeAllObjects];
                                      }
                                      
