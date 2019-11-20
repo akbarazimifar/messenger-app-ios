@@ -137,12 +137,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "MesiboApplication/SampleAPI.m"
-            timestampString = "574240266.937862"
+            timestampString = "595945959.1788321"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "811"
             endingLineNumber = "811"
-            landmarkName = "-setProfile:status:groupid:handler:"
+            landmarkName = "-login:handler:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -153,7 +153,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "MesiboApplication/SampleAPI.m"
-            timestampString = "574240266.938392"
+            timestampString = "595945959.179222"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "513"
@@ -169,12 +169,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "MesiboApplication/SampleAPI.m"
-            timestampString = "574240266.938694"
+            timestampString = "595945959.179557"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "496"
             endingLineNumber = "496"
-            landmarkName = "-invokeApi:filePath:handler:"
+            landmarkName = "-parseResponse:request:handler:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -185,7 +185,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "MesiboApplication/SampleAPI.m"
-            timestampString = "574240266.938998"
+            timestampString = "595945959.179835"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "464"
@@ -201,7 +201,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "MesiboApplication/SampleAPI.m"
-            timestampString = "574240266.939317"
+            timestampString = "595945959.180115"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "627"

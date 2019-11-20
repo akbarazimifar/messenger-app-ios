@@ -22,6 +22,7 @@
 @property int type; //type in TringMe values
 @property (nonatomic, strong) NSData *image; // image filename of person
 @property (nonatomic, strong) NSDate *ts;
+@property (nonatomic, assign) BOOL synced;
 +(PhonebookContact *) initWithName:(NSString *)firstname lastname:(NSString *)lastname phone:(NSString *)phone type:(int)type;
 
 @end

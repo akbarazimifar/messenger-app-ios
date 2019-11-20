@@ -77,7 +77,7 @@ UIViewController *_mAppParent = nil;
 +(void) launchMesiboUI:(UIViewController*) rootController withMainWindow: (UIWindow*) mainWindow {
     
     MesiboUiOptions *ui = [MesiboInstance getUiOptions];
-    ui.emptyUserListMessage = @"No contacts! Invite your family and friends to try mesibo.";
+    ui.emptyUserListMessage = @"No active conversations! Invite your family and friends to try mesibo.";
     
     UIViewController *old = mainWindow.rootViewController;
 

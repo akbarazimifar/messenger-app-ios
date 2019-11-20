@@ -12,5 +12,5 @@
 
 
 + (void)showDialogue:(NSString*)message withTitle :(NSString *) title;
-
++ (void)showDialogue:(NSString*)message withTitle:(NSString *)title handler:(void (^) (void)) handler;
 @end
