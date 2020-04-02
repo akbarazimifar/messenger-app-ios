@@ -7,21 +7,19 @@
 //
 
 #import "AppDelegate.h"
-#import <FBSDKCoreKit/FBSDKCoreKit.h>
-#import <FBSDKLoginKit/FBSDKLoginKit.h>
+//#import <FBSDKCoreKit/FBSDKCoreKit.h>
+//#import <FBSDKLoginKit/FBSDKLoginKit.h>
 #import "UIColors.h"
 #import "SampleAPI.h"
 #import "EditSelfProfileViewController.h"
-#import "SettingsViewController.h"
+//#import "SettingsViewController.h"
 #import "CommonAppUtils.h"
 #import "ProfileViewerController.h"
 #import "UIManager.h"
 #import "AppAlert.h"
-#import "SettingsViewController.h"
 #import "AppUIManager.h"
 #import <GoogleMaps/GoogleMaps.h>
 #import <GooglePlaces/GooglePlaces.h>
-#import <AccountKit/AccountKit.h>
 #import "NSDictionary+NilObject.h"
 
 #import "MesiboUIHelper/MesiboUIHelper.h"
@@ -29,9 +27,11 @@
 #import "MesiboCall/MesiboCall.h"
 #import "SamplePushKitNotify.h"
 
+//#import "CrashReporter/CrashReporter.h"
+
 #import <Intents/Intents.h>
 
-@interface AppDelegate () <AKFViewControllerDelegate>
+@interface AppDelegate ()
 
 @end
 
@@ -58,17 +58,14 @@
     MesiboCall *mesiboCall;
     
     SamplePushKitNotify *pushNotify;
-    AKFAccountKit *_accountKit;
-    BOOL _mUseAccontKit;
-    BOOL _mCheckedLoginUI;
+
     AppDelegate *_thiz;
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
    
     _thiz = self;
-    _mUseAccontKit = NO;
-    _mCheckedLoginUI = NO;
+
     
     if ([application respondsToSelector:@selector(isRegisteredForRemoteNotifications)])
     {
@@ -82,8 +79,6 @@
     _fileTranserHandler = [[SampleAppFileTransferHandler alloc] init];
     [_fileTranserHandler initialize];
     
-    [[FBSDKApplicationDelegate sharedInstance] application:application
-                             didFinishLaunchingWithOptions:launchOptions];
     
     self.window = [[UIWindow alloc] initWithFrame:UIScreen.mainScreen.bounds];
     
@@ -127,19 +122,10 @@
     
     // If token is not nil, SampleAPI will start Mesibo as well
     if(nil != [SampleAPIInstance getToken]) {
-        
-        //temporrary to test
-        if(NO) {
-        MesiboUserProfile *sp = [MesiboInstance getSelfProfile];
-            sp.name = @"";
-        [MesiboInstance setSelfProfile:sp];
-        }
-        
         [self launchMainUI];
     } else {
         
         // we check without handler so that welcome controller can be launched in parallel
-        [self checkLoginUI:nil];
         [self doLaunchWelcomeController];
     }
     
@@ -199,16 +185,12 @@
     
 }
 
-
-
-
-
-
 - (void)application:(UIApplication*)application didFailToRegisterForRemoteNotificationsWithError:(NSError*)error {
     Log(@"Failed to get token, error: %@", error);
 }
 
-- (BOOL)application:(UIApplication *)application continueUserActivity:(NSUserActivity *)userActivity restorationHandler:(void(^)(NSArray * __nullable restorableObjects))restorationHandler {
+-(BOOL)application:(UIApplication *)application continueUserActivity:(NSUserActivity *)userActivity restorationHandler:(void (^)(NSArray<id<UIUserActivityRestoring>> * _Nullable))restorationHandler {
+    
     
     INInteraction *interaction = userActivity.interaction;
     INStartAudioCallIntent *startAudioCallIntent = (INStartAudioCallIntent *)interaction.intent;
@@ -231,7 +213,6 @@
     }else if(status == MESIBO_STATUS_AUTHFAIL) {
         [self logoutFromApplication:nil];
     }
-    
 }
 
 -(void) setRootController:(UIViewController *) controller {
@@ -274,7 +255,10 @@
 
 -(void) launchMesiboUI {
     MesiboUiOptions *ui = [MesiboInstance getUiOptions];
-    ui.emptyUserListMessage = @"No contacts! Invite your family and friends to try mesibo.";
+    ui.emptyUserListMessage = @"No active conversations! Invite your family and friends to try mesibo.";
+    
+    // set this to nil to remove 'Create a new group' in contacts list
+    //ui.createGroupTitle = nil;
     
     UIViewController *mesiboController = [MesiboUI getMesiboUIViewController];
     UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:mesiboController];
@@ -297,12 +281,29 @@
         return;
     }
     
-    [ContactUtilsInstance initPhonebook:^(BOOL result) {
+    NSString *syncedContacts = [SampleAPIInstance getSyncedContacts];
+    
+    [ContactUtilsInstance initPhonebook:syncedContacts onPermission: ^(BOOL result) {
+        if(!result) {
+            //permission denied
+            [AppAlert showDialogue:@"Mesibo requires contact permission so that you can communicate with your contacts. You MUST restart App and grant necessary permissions to continue!" withTitle:@"Permission Required" handler:^{
+                //
+            }];
+            return;
+        }
+        
         [SampleAPIInstance startSync];
         [MesiboInstance runInThread:YES handler:^{
             [self launchMesiboUI];
-        }];
-    }];
+        }
+         
+         ];
+    }
+    onChange:^{
+        [SampleAPIInstance onContactsChanged];                           //<#code#>
+    }
+     
+     ];
 }
          
 -(void) dismissAndlaunchMainUI:(UIViewController *)previousController {
@@ -311,48 +312,14 @@
         return;
     }
     
-    if(_mUseAccontKit) {
+    [previousController dismissViewControllerAnimated:NO completion:^{
         [self launchMainUI];
-        [previousController dismissViewControllerAnimated:NO completion:nil];
-    } else {
-        [previousController dismissViewControllerAnimated:NO completion:^{
-            [self launchMainUI];
-        }];
-    }
-}
-
--(void) checkLoginUI:(void (^)(BOOL useAccountKit)) handler {
-    if(_mCheckedLoginUI) {
-        if(handler)
-            handler(_mUseAccontKit);
-        return;
-    }
-    
-    [SampleAPIInstance check_login_ui:^(int result, NSDictionary *response) {
-        self->_mCheckedLoginUI = YES;
-        NSString *uitype = [response objectForKeyOrNil:@"ui"];
-        if([uitype isEqualToString:@"1"])
-            self->_mUseAccontKit = YES;
-        if(handler)
-            handler(self->_mUseAccontKit);
     }];
+    
 }
 
 -(void) launchLoginUIAfterLoginUiCheck {
-    UIViewController<AKFViewController>  *loginController ;
-    if(_mUseAccontKit) {
-        if (_accountKit == nil) {
-            _accountKit = [[AKFAccountKit alloc] initWithResponseType:AKFResponseTypeAccessToken];
-        }
-        
-        loginController = [_accountKit viewControllerForPhoneLoginWithPhoneNumber:nil state:nil];
-        
-        loginController.delegate = self;
-        // Optionally, you may set up backup verification methods.
-        loginController.enableSendToFacebook = YES;
-        loginController.enableGetACall = YES;
-    }
-    else {
+    UIViewController  *loginController ;
     
         loginController = [MesiboUIHelper startMobileVerification:^(id caller, NSString *phone, NSString *code, PhoneVerificationResultBlock resultBlock) {
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -360,7 +327,6 @@
             });
             [self onLogin:phone code:code akToken:nil caller:caller handler:resultBlock];
         }];
-    }
     
     [self setRootController:loginController];
     mAppLaunchData.mBanners = nil;
@@ -368,11 +334,10 @@
 }
 
 -(void) launchLoginUI {
-    [self checkLoginUI:^(BOOL useAccountKit) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self launchLoginUIAfterLoginUiCheck];
-        });
-    }];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self launchLoginUIAfterLoginUiCheck];
+    });
+    
 }
 
 
@@ -453,28 +418,6 @@
     }];
     
     [self setRootController:welcomeController];
-}
-
-
-#pragma mark - AKFViewControllerDelegate;
-
-// handle callback on successful login to show authorization code
-- (void)                 viewController:(UIViewController<AKFViewController> *)viewController
-  didCompleteLoginWithAuthorizationCode:(NSString *)code
-                                  state:(NSString *)state
-{
-}
-
-- (void)viewController:(UIViewController<AKFViewController> *)viewController didCompleteLoginWithAccessToken:(id<AKFAccessToken>)accessToken state:(NSString *)state
-{
-    NSString *token = [accessToken tokenString];
-    //NSLog(@"AK access token: %@", token);
-    [self onLogin:nil code:nil akToken:token caller:viewController handler:nil];
-}
-
-- (void)viewController:(UIViewController<AKFViewController> *)viewController didFailWithError:(NSError *)error
-{
-    NSLog(@"%@ did fail with error: %@", viewController, error);
 }
 
 -(void) launchEditProfile {

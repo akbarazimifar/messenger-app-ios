@@ -38,9 +38,6 @@
 		3EA490441E389F4200492966 /* GoogleMapsCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3EA4903F1E389F4200492966 /* GoogleMapsCore.framework */; };
 		3EA490451E389F4200492966 /* GooglePlacePicker.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3EA490401E389F4200492966 /* GooglePlacePicker.framework */; };
 		3EA490461E389F4200492966 /* GooglePlaces.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3EA490411E389F4200492966 /* GooglePlaces.framework */; };
-		3EA4904A1E389F5500492966 /* FBSDKShareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3EA490471E389F5500492966 /* FBSDKShareKit.framework */; };
-		3EA4904B1E389F5500492966 /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3EA490481E389F5500492966 /* FBSDKCoreKit.framework */; };
-		3EA4904C1E389F5500492966 /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3EA490491E389F5500492966 /* FBSDKLoginKit.framework */; };
 		3EA490541E38A00300492966 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3EA490531E38A00300492966 /* CoreTelephony.framework */; };
 		3EA490561E38A00C00492966 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3EA490551E38A00C00492966 /* AVFoundation.framework */; };
 		3EA490581E38A01400492966 /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3EA490571E38A01400492966 /* GLKit.framework */; };
@@ -88,8 +85,6 @@
 		88B4F35F1EBF67890032E9F2 /* contactutils.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 88B4F35E1EBF67890032E9F2 /* contactutils.framework */; };
 		88B6A0531EA736080051A873 /* opensource_ios.png in Resources */ = {isa = PBXBuildFile; fileRef = 88B6A0521EA736080051A873 /* opensource_ios.png */; };
 		88C4EC1521EE3D8C0066F405 /* mesibo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 88C4EC1421EE3D8C0066F405 /* mesibo.framework */; };
-		88CA3B51219D27550076802C /* AccountKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 88CA3B4F219D27550076802C /* AccountKit.framework */; };
-		88CA3B52219D27550076802C /* AccountKitStrings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 88CA3B50219D27550076802C /* AccountKitStrings.bundle */; };
 		88DE780A21EDA35000A1876A /* mesibocall.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 88DE780921EDA35000A1876A /* mesibocall.framework */; };
 		88DE781D21EDAAA400A1876A /* MesiboUIResource.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 88DE781C21EDAAA400A1876A /* MesiboUIResource.bundle */; };
 		88F30B531F7D0BB700803AA8 /* Contacts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 88F30B521F7D0BB700803AA8 /* Contacts.framework */; };
@@ -176,9 +171,6 @@
 		3EA4903F1E389F4200492966 /* GoogleMapsCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GoogleMapsCore.framework; path = Frameworks/Google/GoogleMapsCore.framework; sourceTree = "<group>"; };
 		3EA490401E389F4200492966 /* GooglePlacePicker.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GooglePlacePicker.framework; path = Frameworks/Google/GooglePlacePicker.framework; sourceTree = "<group>"; };
 		3EA490411E389F4200492966 /* GooglePlaces.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GooglePlaces.framework; path = Frameworks/Google/GooglePlaces.framework; sourceTree = "<group>"; };
-		3EA490471E389F5500492966 /* FBSDKShareKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKShareKit.framework; path = Frameworks/Facebook/FBSDKShareKit.framework; sourceTree = "<group>"; };
-		3EA490481E389F5500492966 /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKCoreKit.framework; path = Frameworks/Facebook/FBSDKCoreKit.framework; sourceTree = "<group>"; };
-		3EA490491E389F5500492966 /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKLoginKit.framework; path = Frameworks/Facebook/FBSDKLoginKit.framework; sourceTree = "<group>"; };
 		3EA490531E38A00300492966 /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
 		3EA490551E38A00C00492966 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		3EA490571E38A01400492966 /* GLKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLKit.framework; path = System/Library/Frameworks/GLKit.framework; sourceTree = SDKROOT; };
@@ -232,8 +224,6 @@
 		88B4F35E1EBF67890032E9F2 /* contactutils.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = contactutils.framework; sourceTree = "<group>"; };
 		88B6A0521EA736080051A873 /* opensource_ios.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = opensource_ios.png; sourceTree = "<group>"; };
 		88C4EC1421EE3D8C0066F405 /* mesibo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = mesibo.framework; sourceTree = "<group>"; };
-		88CA3B4F219D27550076802C /* AccountKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AccountKit.framework; sourceTree = "<group>"; };
-		88CA3B50219D27550076802C /* AccountKitStrings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = AccountKitStrings.bundle; sourceTree = "<group>"; };
 		88DE780921EDA35000A1876A /* mesibocall.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = mesibocall.framework; sourceTree = "<group>"; };
 		88DE781C21EDAAA400A1876A /* MesiboUIResource.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = MesiboUIResource.bundle; path = mesiboui.framework/Versions/A/Resources/MesiboUIResource.bundle; sourceTree = "<group>"; };
 		88F30B521F7D0BB700803AA8 /* Contacts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Contacts.framework; path = System/Library/Frameworks/Contacts.framework; sourceTree = SDKROOT; };
@@ -276,14 +266,10 @@
 				88C4EC1521EE3D8C0066F405 /* mesibo.framework in Frameworks */,
 				8839B07B21ADB51F00B55B85 /* WebRTC.framework in Frameworks */,
 				88811C4F21A80BE000AECB33 /* mediapicker.framework in Frameworks */,
-				3EA4904C1E389F5500492966 /* FBSDKLoginKit.framework in Frameworks */,
-				3EA4904A1E389F5500492966 /* FBSDKShareKit.framework in Frameworks */,
-				3EA4904B1E389F5500492966 /* FBSDKCoreKit.framework in Frameworks */,
 				3EA490441E389F4200492966 /* GoogleMapsCore.framework in Frameworks */,
 				3EA490431E389F4200492966 /* GoogleMapsBase.framework in Frameworks */,
 				3EA490421E389F4200492966 /* GoogleMaps.framework in Frameworks */,
 				3EA490461E389F4200492966 /* GooglePlaces.framework in Frameworks */,
-				88CA3B51219D27550076802C /* AccountKit.framework in Frameworks */,
 				3EA490451E389F4200492966 /* GooglePlacePicker.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -456,7 +442,6 @@
 				3E4CF0A81E40E81800D589A0 /* Photos.framework */,
 				3E4CF08C1E40B15200D589A0 /* libstdc++.tbd */,
 				3EA4906D1E38A0F700492966 /* Others */,
-				3EA4903C1E389F2F00492966 /* Facebook */,
 				3EA4903B1E389F2600492966 /* Google */,
 				3EA490271E389CC400492966 /* MesiboCore */,
 				3EA490261E389CB600492966 /* MesiboUI */,
@@ -517,18 +502,6 @@
 				3EA490411E389F4200492966 /* GooglePlaces.framework */,
 			);
 			name = Google;
-			sourceTree = "<group>";
-		};
-		3EA4903C1E389F2F00492966 /* Facebook */ = {
-			isa = PBXGroup;
-			children = (
-				88CA3B4F219D27550076802C /* AccountKit.framework */,
-				88CA3B50219D27550076802C /* AccountKitStrings.bundle */,
-				3EA490471E389F5500492966 /* FBSDKShareKit.framework */,
-				3EA490481E389F5500492966 /* FBSDKCoreKit.framework */,
-				3EA490491E389F5500492966 /* FBSDKLoginKit.framework */,
-			);
-			name = Facebook;
 			sourceTree = "<group>";
 		};
 		3EA4906D1E38A0F700492966 /* Others */ = {
@@ -602,6 +575,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);
@@ -663,7 +637,6 @@
 				3EA48FB01E38998C00492966 /* Main.storyboard in Resources */,
 				88AD36791E433ECE00A0241E /* GooglePlaces.bundle in Resources */,
 				88AD36751E433E0600A0241E /* GoogleMaps.bundle in Resources */,
-				88CA3B52219D27550076802C /* AccountKitStrings.bundle in Resources */,
 				88811C5521A80C2400AECB33 /* MesiboCallBundle.bundle in Resources */,
 				889963711E93CC6100FE21EB /* ImagePickerBundle.bundle in Resources */,
 			);

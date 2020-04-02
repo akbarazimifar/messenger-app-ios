@@ -38,12 +38,11 @@
     NSString *mApiUrl;
     NSString *mUploadUrl;
     NSString *mDownloadUrl;
-    NSString *mAkClientToken;
-    NSString *mAkAid;
     int mApnTokenType;
     NSString *mGoogleKey;
     BOOL mApnTokenSent;
     BOOL mSyncStarted;
+    BOOL mInitPhonebook;
     void (^mAPNCompletionHandler)(UIBackgroundFetchResult);
 }
 
@@ -74,8 +73,6 @@
     mApnTokenType = 0;
     mApnTokenSent = NO;
     mGoogleKey = nil;
-    mAkClientToken = nil;
-    mAkAid = nil;
     mInvite = nil;
     
     mApiUrl = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"MessengerApiUrl"];
@@ -89,13 +86,6 @@
         NSLog(@"************* INVALID GOOGLE MAP KEY - set a valid Key in GoogleMapKey field in Info.plist ************* ");
     }
     
-    mAkClientToken = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"AccountKitClientToken"];
-    if (!mAkClientToken || [mAkClientToken length] < 8) {
-        NSLog(@"************* INVALID AccountKit Client Token - set a valid Key in AccountKitClientToken field in Info.plist ************* ");
-    }
-    
-    mAkAid = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"FacebookAppID"];
-    
     mUserDefaults = [NSUserDefaults standardUserDefaults];
     mContactTimestamp = 0;
     mToken = [mUserDefaults objectForKey:@"token"];
@@ -106,25 +96,13 @@
     mSyncPending = YES;
     mResetSyncedContacts = NO;
     mSyncStarted = NO;
+    mInitPhonebook = NO;
     
     mDeviceType = [NSString stringWithFormat:@"%d", [MesiboInstance getDeviceType]];
     
     if([mToken length] > 0) {
         mContactTimestamp = [[mUserDefaults objectForKey:@"ts"] longLongValue];
-        
         [self startMesibo:NO];
-        
-        [ContactUtilsInstance initPhonebook:^(BOOL result) {
-            if(!result) {
-                //permission denied
-                [AppAlert showDialogue:@"Mesibo requires contact permission so that you can communicate with your contacts. You MUST restart App and grant necessary permissions to continue!" withTitle:@"Permission Required" handler:^{
-                    //
-                }];
-                
-            }
-            [self startSync];
-        }];
-        
     }
 }
 
@@ -156,7 +134,7 @@
     [MesiboInstance setDatabase:@"test.db" resetTables:resetProfiles?MESIBO_DBTABLE_PROFILES:0]; //TBD, change this after testing
     
     if(resetProfiles) {
-        [ContactUtilsInstance syncReset];
+        [ContactUtilsInstance reset];
         [MesiboInstance setKey:SYNCEDCONTACTS_KEY value:@""];
     }
     
@@ -186,40 +164,58 @@
     }
     
     if(mResetSyncedContacts) {
-        [ContactUtilsInstance syncReset];
+        [ContactUtilsInstance reset];
         [MesiboInstance setKey:SYNCEDCONTACTS_KEY value:@""];
     }
     
+    id thiz = self;
     [self getContacts:nil hidden:NO handler:^(int result, NSDictionary *response) {
+            //update entire table after all groups added since UI doesn't add group messages unless profile present
+            NSArray *contacts = (NSArray *)[response objectForKeyOrNil:@"contacts"];
         
+            if([contacts count] > 0) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [MesiboInstance setProfile:nil refresh:YES];
+                });
+            }
+        
+            [thiz startContactSync];
     }];
-    
-    
+}
+
+-(void) onContactsChanged {
+    mSyncPending = YES;
+    [self startSync];
+}
+
+-(NSString *) getSyncedContacts {
+    return [MesiboInstance readKey:SYNCEDCONTACTS_KEY];
+}
+
+-(void) saveSyncedContacts:(NSArray *) contacts {
+    NSString *str = [ContactUtilsInstance synced:contacts type:CONTACTUTILS_SYNCTYPE_SYNC];
+    [MesiboInstance setKey:SYNCEDCONTACTS_KEY value:str];
 }
 
 -(void) startContactSync {
     
+    if(nil == self)
+        return;
+    
+    @synchronized (self) {
     if(mSyncStarted)
         return;
     
     mSyncStarted = YES;
-    
-    //syncedContacts = nil;
-    //syncedContacts = nil;
-    
-    if(nil == self)
-        return;
+    }
     
     //TBD, we need to fix contact utils to run in this thread
     // We must run in UI thread else contact change is not triggered
     [MesiboInstance runInThread:YES handler: ^{
-         NSString *syncedContacts = [MesiboInstance readKey:SYNCEDCONTACTS_KEY];
         __block NSMutableArray *mContacts = [NSMutableArray new];
         __block NSMutableArray *mDeletedContacts = [NSMutableArray new];
         
-        [ContactUtilsInstance sync:syncedContacts
-         
-                         onContact:^BOOL (PhonebookContact *c, int type) {
+        [ContactUtilsInstance sync:^BOOL (PhonebookContact *c, int type) {
                              if(!c)
                                  return NO;
                              
@@ -236,7 +232,7 @@
                              NSString *selfPhone = [self getPhone];
                              if(selfPhone && c.phoneNumber && [selfPhone isEqualToString:c.phoneNumber]) {
                                  NSArray *selfarray = [NSArray arrayWithObject:c.phoneNumber];
-                                 [ContactUtilsInstance synced:selfarray type:CONTACTUTILS_SYNCTYPE_SYNC]; // so that it's not called again
+                                 [self saveSyncedContacts:selfarray];
                                  return YES;
                              }
                              
@@ -268,9 +264,7 @@
                              return YES;
                          }
          
-                            onSave:^(NSString *contactsToSave, BOOL syncDone) {
-                                [MesiboInstance setKey:SYNCEDCONTACTS_KEY value:contactsToSave];
-                            }];
+                            ];
     }];
 }
 
@@ -424,7 +418,7 @@
             mResetSyncedContacts = YES;
             mSyncPending = YES;
             [ContactUtilsInstance setCountryCode:[mCc intValue]];
-            [ContactUtilsInstance syncReset];
+            [ContactUtilsInstance reset];
             [MesiboInstance reset];
             
             
@@ -455,20 +449,7 @@
         }
         mResetSyncedContacts = NO;
         
-        // check if original request was sent with contacts
-        NSString *phones = (NSString *)[request objectForKeyOrNil:@"phones"];
-        
-        if([SampleAPI isEmpty:phones]) {
             
-            //update entire table after all groups added since UI doesn't add group messages unless profile present
-            if(contacts.count > 0) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [MesiboInstance setProfile:nil refresh:YES];
-                });
-            }
-            
-            [self startContactSync];
-        }
         
     } else if([op isEqualToString:@"getgroup"] || [op isEqualToString:@"setgroup"]) {
         [self createContact:returnedDict serverts:serverts selfProfile:NO refresh:NO visibility:VISIBILITY_VISIBLE];
@@ -802,21 +783,6 @@
     [self invokeApi:post filePath:nil handler:handler];
 }
 
--(void) login:(NSString *)akToken handler:(SampleAPI_onResponse) handler {
-    NSMutableDictionary *post = [[NSMutableDictionary alloc] init];
-    [post setValue:@"login" forKey:@"op"];
-    [post setValue:akToken forKey:@"aktoken"];
-    [post setValue:mAkClientToken forKey:@"akct"];
-    [post setValue:mAkAid forKey:@"akaid"];
-    
-    
-    
-    NSString *packageName = [[NSBundle mainBundle] bundleIdentifier];
-    [post setValue:packageName forKey:@"appid"];
-    
-    [self invokeApi:post filePath:nil handler:handler];
-}
-
 -(BOOL) setProfile:(NSString*)name status:(NSString*)status groupid:(uint32_t)groupid handler:(SampleAPI_onResponse) handler {
     if(nil == mToken || mToken.length == 0)
         return NO ;
@@ -897,8 +863,9 @@
         }
         
         BOOL rv = [self parseResponse:response request:post handler:handler];
-        if(contacts && rv)
-            [ContactUtilsInstance synced:contacts type:CONTACTUTILS_SYNCTYPE_SYNC];
+        if(contacts && rv) {
+            [self saveSyncedContacts:contacts];
+        }
         
         return rv;
     }
@@ -922,8 +889,10 @@
     }
     
     BOOL rv = [self parseResponse:response request:post handler:nil];
-    if(contacts && rv)
+    if(contacts && rv) {
+        
         [ContactUtilsInstance synced:contacts type:CONTACTUTILS_SYNCTYPE_DELETE];
+    }
     
     return rv;
 }

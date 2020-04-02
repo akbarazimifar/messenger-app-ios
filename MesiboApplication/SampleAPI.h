@@ -52,6 +52,8 @@ typedef void (^SampleAPI_onResponse)(int result, NSDictionary *response);
 
 -(void) startMesibo:(BOOL) resetProfiles;
 -(void) startSync;
+-(void) onContactsChanged;
+-(NSString *) getSyncedContacts;
 
 -(void) resetDB;
 -(void) logout:(BOOL) forced parent:(id)parent;
