@@ -350,6 +350,9 @@
     
 }
 
+-(void) Mesibo_OnMessage:(MesiboMessage *)message {
+    
+}
 
 -(void) Mesibo_onFile:(MesiboParams *)params file:(MesiboFileInfo *)file{
     
