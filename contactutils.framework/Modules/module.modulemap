@@ -1,5 +1,5 @@
 framework module contactutils {
-umbrella header "add your headers.h"
+ umbrella header "ContactUtils.h"
 
  module * { export * }
 

@@ -2,7 +2,6 @@
 //  PhoneUtils.h
 //  MesiboDevel
 //
-//  Created by Yusuf on 13/03/17.
 //  Copyright © 2017 Mesibo. All rights reserved.
 //
 
