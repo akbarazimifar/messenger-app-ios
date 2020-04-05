@@ -1,5 +1,10 @@
 ## Mesibo Messenger for iOS
-[Mesibo](https://mesibo.com) Messenger is an open-source app with real-time messaging, voice and video call features. This repo contains the source code for Mesibo Messenger App for iOS. The GitHub repository for Android version is [here](https://github.com/mesibo/messenger-app-android).
+[Mesibo](https://mesibo.com) Messenger is an open-source app with real-time messaging, voice and video call features. This repo contains the source code for Mesibo Messenger App for iOS. 
+
+### Other Versions
+- [iOS - Swift](https://github.com/mesibo/messenger-app-ios-swift). 
+- [Android - Java](https://github.com/mesibo/messenger-app-android). 
+- [Android - Kotlin](https://github.com/mesibo/messenger-app-android-kotlin). 
 
 ### Features
 - One-on-one messaging and Group chat
