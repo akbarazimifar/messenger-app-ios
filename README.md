@@ -34,12 +34,9 @@ To download, open a terminal and issue following commands:
     $ cd Messenger
     $ git lfs install
     $ git clone https://github.com/mesibo/messenger-app-ios.git
-    $ ./fetch_mesibo_webrtc_framework.sh
 
 ### Download the code as a zip file
 You can also download the complete iOS Messenger source code as a [zip file](https://github.com/mesibo/messenger-app-ios/archive/master.zip). Although simple, the downsize of this approach is that you will have to download the complete source code everytime it is updated on the repository. 
-
-> WARNING! zip file will be quite large due to inclusion of bitcode enabled frameworks. `git clone` is the recommended approach.
 
 ### Stay Up-to-date
 Whatever approach you take to download the code, it is important to stay up-to-date with the latest changes, new features, fixes etc. Ensure to **Star(*)** the project on GitHub to get notified whenever the source code is updated. 
