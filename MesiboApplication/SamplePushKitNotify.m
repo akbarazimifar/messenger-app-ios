@@ -45,6 +45,10 @@
         return;
     }
     
+    if(![type isEqualToString:PKPushTypeVoIP]) {
+        return;
+    }
+    
     NSData *data = credentials.token;
     NSUInteger capacity = data.length * 2;
     NSMutableString *sbuf = [NSMutableString stringWithCapacity:capacity];
@@ -56,21 +60,22 @@
     
     //NSLog(@"PushCredentials: %@", credentials.token);
     //NSLog(@"PushCredentials: %@", sbuf);
-    [SampleAPIInstance setPushToken:sbuf];
+    [MesiboInstance setPushToken:sbuf voip:YES];
 }
 
-#if 0
 - (void)pushRegistry:(PKPushRegistry *)registry didReceiveIncomingPushWithPayload:(PKPushPayload *)payload forType:(PKPushType)type {
     
     [MesiboInstance setAppInForeground:nil screenId:-1 foreground:YES];
     
 }
-#endif
 
 
 -(void)pushRegistry:(PKPushRegistry *)registry didReceiveIncomingPushWithPayload:(PKPushPayload *)payload forType:(PKPushType)type withCompletionHandler:(void (^)(void))completion {
     
-    [MesiboInstance setPushRegistryCompletion:completion];
+    [MesiboInstance setPushRegistryCompletion:^{
+        //NSLog(@"Complettion done");
+        completion();
+    }];
     [MesiboInstance setAppInForeground:nil screenId:-1 foreground:YES];
 }
 @end

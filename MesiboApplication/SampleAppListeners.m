@@ -1,9 +1,6 @@
 //
 //  SampleAppListeners.m
-//
-//  Created by John on 23/03/17.
 //  Copyright © 2018 Mesibo. All rights reserved.
-//
 
 #import "SampleAppListeners.h"
 #import "SampleAPI.h"
@@ -32,7 +29,8 @@
 
 -(void) initialize {
     [MesiboInstance addListener:self];
-    [MesiboCallInstance setListener:self];
+    // if you need to customize, set listener
+    //[MesiboCallInstance setListener:self];
 }
 
 -(void) Mesibo_OnMessage:(MesiboParams *)params data:(NSData *)data {
@@ -277,11 +275,31 @@
     return YES;
 }
 
--(void) MesiboCall_onShowViewController:(id)parent vc:(id)vc {
-    [AppUIManager launchVC:parent vc:vc];
+- (void)MesiboCall_OnError:(MesiboCallProperties * _Nonnull)cp error:(int)error {
+    
 }
 
--(void) MesiboCall_onDismissViewController:(id)vc {
+- (MesiboCallProperties * _Nullable)MesiboCall_OnIncoming:(MesiboUserProfile * _Nonnull)profile video:(BOOL)video {
+    MesiboCallProperties *cp = [MesiboCallInstance createCallProperties:video];
+    
+    //cp.parent = self.window.rootViewController;
+    
+    // any customizations goes here
+    return cp;
+    
 }
+
+- (BOOL)MesiboCall_OnNotify:(int)type profile:(MesiboUserProfile * _Nonnull)profile video:(BOOL)video {
+    return NO;
+}
+
+- (BOOL)MesiboCall_OnShowUserInterface:(id)call properties:(MesiboCallProperties *)cp {
+    
+    // Show your own UI or return NO to show the default user interface
+    
+    return NO;
+
+}
+
 
 @end

@@ -82,12 +82,6 @@
     
     self.window = [[UIWindow alloc] initWithFrame:UIScreen.mainScreen.bounds];
     
-    
-    //([UIApplication sharedApplication]).keyWindow.rootViewController = nil;
-    
-    
-    
-    //[[UINavigationBar appearance] setBackgroundImage:image forBarMetrics:UIBarMetricsDefault];
     [[UINavigationBar appearance] setBarTintColor:[UIColor getColor:PRIMARY_COLOR]];
     [[UINavigationBar appearance] setTranslucent:NO];
     
@@ -129,7 +123,6 @@
         [self doLaunchWelcomeController];
     }
     
-    mesiboCall = [MesiboCall sharedInstance];
     pushNotify = [SamplePushKitNotify getInstance];
     
     return YES;
@@ -162,7 +155,16 @@
     // NSLog(@"My token is: %@", deviceToken);
     NSString * deviceTokenString = [[[[deviceToken description] stringByReplacingOccurrencesOfString: @"<" withString: @""] stringByReplacingOccurrencesOfString: @">" withString: @""]   stringByReplacingOccurrencesOfString: @" " withString: @""];
     Log(@"the generated device token string is : %@",deviceTokenString);
-    [SampleAPIInstance setAPNToken:deviceTokenString];
+    NSUInteger capacity = deviceToken.length * 2;
+    NSMutableString *sbuf = [NSMutableString stringWithCapacity:capacity];
+    const unsigned char *buf = deviceToken.bytes;
+    NSInteger i;
+    for (i=0; i < deviceToken.length; ++i) {
+        [sbuf appendFormat:@"%02X", (int)buf[i]];
+    }
+    
+    //[SampleAPIInstance setAPNToken:deviceTokenString];
+    [MesiboInstance setPushToken:sbuf voip:NO];
 }
 
 -(void) application:(UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
@@ -182,6 +184,7 @@
     }
     
     [SampleAPIInstance setAPNCompletionHandler:completionHandler];
+    [MesiboInstance setAppInForeground:nil screenId:-1 foreground:YES];
     
 }
 
@@ -199,7 +202,7 @@
     NSString *phoneNum = personHandle.value;
     //[CallManager sharedInstance].delegate = self;
     //[[CallManager sharedInstance] startCallWithPhoneNumber:phoneNum];
-    [MesiboCallInstance call:nil callid:0 address:phoneNum video:NO incoming:NO];
+    [MesiboCallInstance callUiForExistingCall:nil];
     return YES;
 }
 
@@ -245,12 +248,9 @@
         }
     };
     
-    if(akToken != nil) {
-        [SampleAPIInstance login:akToken handler:handler];
-    }
-    else {
-        [SampleAPIInstance login:phone code:code handler:handler];
-    }
+    [SampleAPIInstance login:phone code:code handler:handler];
+
+
 }
 
 -(void) launchMesiboUI {
@@ -268,7 +268,7 @@
     [AppUIManager setDefaultParent:navigationController];
     
     //[AppUIManager launchMesiboUI:self.window.rootViewController withMainWindow:self.window];
-    [MesiboCallInstance start];
+    mesiboCall = [MesiboCall startWith:nil name:@"mesibo" icon:nil callKit:YES];
 }
 
 -(void) launchMainUI {
@@ -487,11 +487,10 @@
         
     } else { // MESSAGEBOX
         if(item == 0) {
-            NSLog(@"Menu btn from messagebox pressed");
-            [MesiboCallInstance call:parent callid:0 address:profile.address video:NO incoming:NO];
+            [MesiboCallInstance callUi:parent address:profile.address video:NO];
         }else if (item ==1) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                [MesiboCallInstance call:parent callid:0 address:profile.address video:YES incoming:NO];
+                [MesiboCallInstance callUi:parent address:profile.address video:YES];
                 
             });
         }

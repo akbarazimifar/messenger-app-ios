@@ -78,7 +78,6 @@ typedef void (^SampleAPI_onResponse)(int result, NSDictionary *response);
 -(NSString *) groupStatusFromMembers:(NSString*) members;
 
 -(void) setAPNToken:(NSString *) token;
--(void) setPushToken:(NSString *)token;
 -(void) setMediaAutoDownload:(BOOL)autoDownload;
 -(BOOL) getMediaAutoDownload;
 
