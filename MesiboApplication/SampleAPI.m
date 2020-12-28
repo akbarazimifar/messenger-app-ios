@@ -766,6 +766,10 @@
     NSString *packageName = [[NSBundle mainBundle] bundleIdentifier];
     [post setValue:packageName forKey:@"appid"];
     
+#if TARGET_OS_SIMULATOR
+    [post setValue:@"1" forKey:@"sim"];
+#endif
+    
     [self invokeApi:post filePath:nil handler:handler];
 }
 
@@ -999,7 +1003,7 @@
         mApnTokenSent = YES; // so that next time it will not be called
     }
     
-    [MesiboInstance setPushToken:mApnToken voip:NO];
+    //[MesiboInstance setPushToken:mApnToken voip:NO];
 }
 
 -(void) addContacts:(NSArray *)profiles hidden:(BOOL)hidden {

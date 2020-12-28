@@ -25,30 +25,12 @@
 
 -(void) initialize {
     UNUserNotificationCenter* center = [UNUserNotificationCenter currentNotificationCenter];
-    center.delegate = self;
-    [center requestAuthorizationWithOptions:(UNAuthorizationOptionAlert + UNAuthorizationOptionSound)
+    [center requestAuthorizationWithOptions:(UNAuthorizationOptionAlert | UNAuthorizationOptionSound | UNAuthorizationOptionBadge)
                           completionHandler:^(BOOL granted, NSError * _Nullable error) {
-                              // Enable or disable features based on authorization.
-                              NSLog(@"on Auth");
                           }];
     
 }
 
--(void) notify_pre10:(int)type subject:(NSString *)subject message:(NSString *)message {
-    if (YES /*|| application.applicationState == UIApplicationStateActive*/ ) {
-        UILocalNotification *localNotification = [[UILocalNotification alloc] init];
-        localNotification.userInfo = nil;
-        localNotification.soundName = UILocalNotificationDefaultSoundName;
-        localNotification.alertTitle = subject;
-        localNotification.alertBody = message;
-        localNotification.fireDate = nil; //[NSDate date];
-        localNotification.applicationIconBadgeNumber = 1; // count
-        [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
-    }
-}
-
-//https://developer.apple.com/reference/usernotifications/unusernotificationcenter?language=objc
-//http://stackoverflow.com/questions/41845576/ios-10-how-to-show-incoming-voip-call-notification-when-app-is-in-background
 -(void) notify:(int)type subject:(NSString *)subject message:(NSString *)message {
     if(![message length]) return;
     
@@ -102,25 +84,8 @@
 
 }
 
--(void)userNotificationCenter:(UNUserNotificationCenter *)center willPresentNotification:(UNNotification *)notification withCompletionHandler:(void (^)(UNNotificationPresentationOptions options))completionHandler{
-    NSLog(@"User Info : %@",notification.request.content.userInfo);
-    if([notification.request.content.categoryIdentifier isEqualToString:@"2"]) {
-        completionHandler(UNAuthorizationOptionSound | UNAuthorizationOptionAlert | UNAuthorizationOptionBadge);
-    } else {
-        completionHandler(0); // no foreground notifications
-    }
-    
-}
-
-//Called to let your app know which action was selected by the user for a given notification.
--(void)userNotificationCenter:(UNUserNotificationCenter *)center didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void(^)())completionHandler{
-    NSLog(@"User Info : %@",response.notification.request.content.userInfo);
-    completionHandler();
-}
-
-
 -(void) clear {
-    
+    [[UNUserNotificationCenter currentNotificationCenter] removeAllDeliveredNotifications];
 }
 
 @end
