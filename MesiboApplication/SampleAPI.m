@@ -379,10 +379,17 @@
         result = SAMPLEAPP_RESULT_OK;
     } else {
         NSString *error = (NSString *)[returnedDict objectForKeyOrNil:@"error"];
+        NSString *errmsg = (NSString *)[returnedDict objectForKeyOrNil:@"errmsg"];
+        NSString *errtitle = (NSString *)[returnedDict objectForKeyOrNil:@"errtitle"];
         if([error isEqualToString:@"AUTHFAIL"]) {
             result = SAMPLEAPP_RESULT_AUTHFAIL;
             [self logout:YES parent:nil];
             return NO;
+        }
+        
+        if(errmsg) {
+            if(!errtitle) errtitle = @"Failed";
+            [AppAlert showDialogue:errmsg withTitle:errtitle];
         }
     }
     
