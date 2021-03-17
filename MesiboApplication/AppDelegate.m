@@ -18,8 +18,6 @@
 #import "UIManager.h"
 #import "AppAlert.h"
 #import "AppUIManager.h"
-#import <GoogleMaps/GoogleMaps.h>
-#import <GooglePlaces/GooglePlaces.h>
 #import "NSDictionary+NilObject.h"
 
 #import "MesiboUIHelper/MesiboUIHelper.h"
