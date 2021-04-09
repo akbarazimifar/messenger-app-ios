@@ -252,7 +252,7 @@
 }
 
 -(void) launchMesiboUI {
-    MesiboUiOptions *ui = [MesiboInstance getUiOptions];
+    MesiboUiOptions *ui = [MesiboUI getUiOptions];
     ui.emptyUserListMessage = @"No active conversations! Invite your family and friends to try mesibo.";
     
     // set this to nil to remove 'Create a new group' in contacts list
