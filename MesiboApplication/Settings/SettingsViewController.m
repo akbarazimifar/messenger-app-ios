@@ -7,7 +7,7 @@
 
 #import "SettingsViewController.h"
 #import "CommonAppUtils.h"
-#import "EditSelfProfileViewController.h"
+#import "EditProfileController.h"
 #import "SampleAPI.h"
 #import <mesibo/mesibo.h>
 #import "AppUIManager.h"
@@ -73,19 +73,16 @@
             imageView.layer.cornerRadius = imageView.layer.frame.size.width/2;
             imageView.layer.masksToBounds = YES;
             
-            MesiboUserProfile *up = [MesiboInstance getSelfProfile];
-            
-            NSString *imagePath = [MesiboInstance getProfilePicture:up type:MESIBO_FILETYPE_AUTO];
-            if([MesiboInstance fileExists:imagePath]) {
-                imageView.image = [UIImage imageWithContentsOfFile:imagePath];
-            } else {
-                imageView.image = [AppUIManager getDefaultImage:NO];
-            }
+            MesiboProfile *up = [MesiboInstance getSelfProfile];
+            NSString *status = [up getStatus];
+            imageView.image = [up getImageOrThumbnail];
+            if(!imageView.image) imageView.image = [AppUIManager getDefaultImage:NO];
+    
             
             UILabel *nameLabel = [cell viewWithTag:101];
-            nameLabel.text = up.name;
+            nameLabel.text = [up getName];
             UILabel *statusLabel = [cell viewWithTag:102];
-            statusLabel.text = up.status;
+            statusLabel.text = [up getStatus];
             
         }
         break;
@@ -115,7 +112,7 @@
     UITableViewCell *theCellClicked = [tableView cellForRowAtIndexPath:indexPath];
     if (theCellClicked == _mProfileCell) {
         UIStoryboard *storyboard  = [UIStoryboard storyboardWithName:@"Main" bundle:[NSBundle mainBundle]];
-        EditSelfProfileViewController *epc = [storyboard instantiateViewControllerWithIdentifier:@"EditSelfProfileViewController"];
+        EditProfileController *epc = [storyboard instantiateViewControllerWithIdentifier:@"EditSelfProfileViewController"];
         [self.navigationController pushViewController:epc animated:YES];
     } else if(theCellClicked == _mLogoutCell) {
         //[self.delegate logoutFromApplication:self];

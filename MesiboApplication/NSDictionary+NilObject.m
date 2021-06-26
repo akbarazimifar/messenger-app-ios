@@ -1,10 +1,7 @@
 //
 //  NSDictionary+NilObject.m
 //  MesiboDevel
-//
-//  Created by Mesibo on 12/03/17.
-//  Copyright © 2018 Mesibo. All rights reserved.
-//
+
 
 #import "NSDictionary+NilObject.h"
 

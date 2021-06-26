@@ -46,6 +46,10 @@
 }
 
 
+//+ (UIColor *)getColor:(CGFloat)hue saturation:(CGFloat)saturation brightness:(CGFloat)brightness {
+//    return [UIColor colorWithHue:(hue/360) saturation:saturation brightness:brightness alpha:1.0];
+//}
+
 +(UIColor *) getColorView:(UInt32) color {
     if(USE_ALL_DEFAULT_COLOR)
         return [ UIColor whiteColor];

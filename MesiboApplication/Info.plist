@@ -30,9 +30,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>1</string>
-	<key>GoogleMapKey</key>
-	<string>AIzaSyC0Kfvga9qdjIzfBYN9ZrGbQeNTy69WCuI</string>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>LSApplicationCategoryType</key>
@@ -63,11 +61,7 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>MessengerApiUrl</key>
-	<string>https://app.mesibo.com/messenger/api.php</string>
-	<key>MessengerDownloadUrl</key>
-	<string>https://appimages.mesibo.com/</string>
-	<key>MessengerUploadUrl</key>
-	<string></string>
+	<string>https://messenger.mesibo.com</string>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSExceptionDomains</key>
@@ -113,6 +107,8 @@
 	<string>This allows Mesibo to use your microphone for voice and video calls</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>This enables you to send your pictures to your Mesibo contacts</string>
+	<key>PHPhotoLibraryPreventAutomaticLimitedAccessAlert</key>
+	<true/>
 	<key>UIAppFonts</key>
 	<array>
 		<string>mesibo-Regular.otf</string>

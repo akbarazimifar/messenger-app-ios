@@ -8,6 +8,7 @@
 
 #import "SampleAppNotify.h"
 
+//https://developer.apple.com/library/content/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/index.html#//apple_ref/doc/uid/TP40008194-CH3-SW1
 @implementation SampleAppNotify 
 
 +(SampleAppNotify *)getInstance {
@@ -25,11 +26,13 @@
 
 -(void) initialize {
     UNUserNotificationCenter* center = [UNUserNotificationCenter currentNotificationCenter];
-    [center requestAuthorizationWithOptions:(UNAuthorizationOptionAlert | UNAuthorizationOptionSound | UNAuthorizationOptionBadge)
+    [center requestAuthorizationWithOptions:(UNAuthorizationOptionBadge | UNAuthorizationOptionAlert | UNAuthorizationOptionSound | UNAuthorizationOptionBadge)
                           completionHandler:^(BOOL granted, NSError * _Nullable error) {
+        //NSLog(@"Notify auth %d", granted?1:0);
                           }];
     
 }
+
 
 -(void) notify:(int)type subject:(NSString *)subject message:(NSString *)message {
     if(![message length]) return;
@@ -44,13 +47,13 @@
 
     
     // Deliver the notification in five seconds.
-    UNTimeIntervalNotificationTrigger* trigger = [UNTimeIntervalNotificationTrigger triggerWithTimeInterval:1 repeats:NO];
+    UNTimeIntervalNotificationTrigger* trigger = [UNTimeIntervalNotificationTrigger triggerWithTimeInterval:1.f repeats:NO];
     UNNotificationRequest* request = [UNNotificationRequest requestWithIdentifier:@"LocalNotification" content:content trigger:trigger];
     
     // Schedule the notification.
     UNUserNotificationCenter* center = [UNUserNotificationCenter currentNotificationCenter];
     [center addNotificationRequest:request withCompletionHandler:^(NSError * _Nullable error) {
-        NSLog(@"Notification Completed: %@", error);
+        //NSLog(@"Notification Completed: %@", error);
     }];
     
 }
@@ -58,15 +61,12 @@
 -(void) notifyMessage:(MesiboParams *)params message:(NSString *)message {
     if(MESIBO_ORIGIN_REALTIME != params.origin || MESIBO_MSGSTATUS_OUTBOX == params.status)
         return;
+    if(!params.profile) return;
     
-    NSString *name = params.peer;
-    if(params.profile) {
-        if([params.profile isMuted])
-            return;
+    if([params.profile isMuted])
+        return;
             
-        name = params.profile.name;
-        
-    }
+    NSString *name = [params.profile getName];
     
     if(nil == name)
         return;
@@ -75,13 +75,12 @@
         if([params.groupProfile isMuted])
             return;
         
-        name = [NSString stringWithFormat:@"%@ @ %@", name, params.groupProfile.name];
+        name = [NSString stringWithFormat:@"%@ @ %@", name, [params.groupProfile getName]];
     }
     
     
     [self notify:SAMPLEAPP_NOTIFYTYPE_MESSAGE subject:name message:message];
     return;
-
 }
 
 -(void) clear {

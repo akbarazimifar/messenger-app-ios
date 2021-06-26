@@ -17,12 +17,11 @@
 #define SampleAppNotifyInstance [SampleAppNotify getInstance]
 
 
-@interface SampleAppNotify : NSObject <UNUserNotificationCenterDelegate>
+@interface SampleAppNotify : NSObject <UNUserNotificationCenterDelegate, MesiboDelegate>
 
 +(SampleAppNotify *) getInstance;
 
 -(void) notify:(int)type subject:(NSString *)subject message:(NSString *)message;
 -(void) notifyMessage:(MesiboParams *)params message:(NSString *)message;
 -(void) clear;
-
 @end

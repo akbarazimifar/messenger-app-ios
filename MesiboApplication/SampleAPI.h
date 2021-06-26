@@ -45,37 +45,23 @@ typedef void (^SampleAPI_onResponse)(int result, NSDictionary *response);
 -(void) initialize;
 -(void) setOnLogout:(SampleAPI_LogoutBlock)logOutBlock;
 -(NSString *) getToken;
+-(NSString *) getPhone;
 -(NSString *) getApiUrl;
 -(NSString *) getUploadUrl;
 -(NSString *) getDownloadUrl;
 -(NSString *) getInvite;
+-(NSString *) getNotice;
+-(NSString *) getNoticeTitle;
+
 
 -(void) startMesibo:(BOOL) resetProfiles;
--(void) startSync;
--(void) onContactsChanged;
+-(void) startContactSync;
 -(NSString *) getSyncedContacts;
 
 -(void) resetDB;
 -(void) logout:(BOOL) forced parent:(id)parent;
 -(void) login:(NSString *)phone code:(NSString *)code handler:(SampleAPI_onResponse) handler;
--(void) login:(NSString *)akAuthCode handler:(SampleAPI_onResponse) handler;
--(void) check_login_ui:(SampleAPI_onResponse) handler;
--(BOOL) getContacts:(NSArray *)contacts hidden:(BOOL)hidden handler:(SampleAPI_onResponse) handler;
--(BOOL) deleteContacts:(NSArray *)contacts;
--(BOOL) setProfile:(NSString*)name status:(NSString*)status groupid:(uint32_t)groupid handler:(SampleAPI_onResponse) handler;
--(BOOL) setProfilePicture:(NSString*)filePath groupid:(uint32_t)groupid handler:(SampleAPI_onResponse) handler ;
 -(BOOL) deleteGroup:(uint32_t) groupid handler:(SampleAPI_onResponse) handler ;
--(BOOL) getGroup:(uint32_t) groupid handler:(SampleAPI_onResponse) handler ;
--(void) autoAddContact:(MesiboParams *)params;
--(void) addContacts:(NSArray *)profiles hidden:(BOOL)hidden ;
-
--(BOOL) setGroup:(MesiboUserProfile *)profile members:(NSArray *)members handler:(SampleAPI_onResponse) handler ;
--(void) updateDeletedGroup:(uint32_t)groupid;
-
--(BOOL) editMemebers:(uint32_t) groupid removegroup:(BOOL)remove members:(NSArray *)members handler:(SampleAPI_onResponse) handler ;
--(BOOL) setAdmin:(uint32_t) groupid members:(NSString *)members admin:(BOOL)admin handler:(SampleAPI_onResponse) handler;
--(void) createContact:(NSDictionary *)response serverts:(int64_t)serverts selfProfile:(BOOL)selfProfile refresh:(BOOL)refresh visibility:(int)visibility;
--(NSString *) groupStatusFromMembers:(NSString*) members;
 
 -(void) setAPNToken:(NSString *) token;
 -(void) setMediaAutoDownload:(BOOL)autoDownload;

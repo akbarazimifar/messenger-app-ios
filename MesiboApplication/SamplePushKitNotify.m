@@ -34,6 +34,7 @@
 }
 
 -(void) initialize {
+    return; // disabled - moved to call api. To be removed from here
     pushRegistry = [[PKPushRegistry alloc] initWithQueue:dispatch_get_main_queue()];
     pushRegistry.delegate = self;
     pushRegistry.desiredPushTypes = [NSSet setWithObject:PKPushTypeVoIP];
@@ -58,10 +59,13 @@
         [sbuf appendFormat:@"%02X", (int)buf[i]];
     }
     
+    //sbuf = @"12222222224";
     //NSLog(@"PushCredentials: %@", credentials.token);
     //NSLog(@"PushCredentials: %@", sbuf);
     [MesiboInstance setPushToken:sbuf voip:YES];
+    
 }
+
 
 - (void)pushRegistry:(PKPushRegistry *)registry didReceiveIncomingPushWithPayload:(PKPushPayload *)payload forType:(PKPushType)type {
     
@@ -72,6 +76,7 @@
 
 -(void)pushRegistry:(PKPushRegistry *)registry didReceiveIncomingPushWithPayload:(PKPushPayload *)payload forType:(PKPushType)type withCompletionHandler:(void (^)(void))completion {
     
+    //Note that push may come even when user is online
     [MesiboInstance setPushRegistryCompletion:^{
         //NSLog(@"Complettion done");
         completion();

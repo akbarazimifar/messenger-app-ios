@@ -3,7 +3,7 @@
 
 #import <Foundation/Foundation.h>
 #import "Mesibo/Mesibo.h"
-#import "MesiboCall/MesiboCall.h"
+#import "mesibocall/MesiboCall.h"
 
 #define SampleAppListenersInstance [SampleAppListeners getInstance]
 

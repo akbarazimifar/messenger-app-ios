@@ -11,4 +11,5 @@
 
 @interface SamplePushKitNotify : NSObject <PKPushRegistryDelegate>
 +(SamplePushKitNotify *)getInstance;
+-(void)completePush;
 @end

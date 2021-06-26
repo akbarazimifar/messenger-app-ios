@@ -1,23 +1,17 @@
-//
-//  AppDelegate.m
-//  TestMesiboUIHelper
-//
-//  Created by John on 14/10/17.
-//  Copyright © 2018 Mesibo. All rights reserved.
-//
+//  Updated by Lee on 14/10/20.
+//  Copyright © 2021 Mesibo. All rights reserved.
+
 
 #import "AppDelegate.h"
-//#import <FBSDKCoreKit/FBSDKCoreKit.h>
-//#import <FBSDKLoginKit/FBSDKLoginKit.h>
 #import "UIColors.h"
 #import "SampleAPI.h"
-#import "EditSelfProfileViewController.h"
-//#import "SettingsViewController.h"
+#import "EditProfileController.h"
 #import "CommonAppUtils.h"
 #import "ProfileViewerController.h"
 #import "UIManager.h"
 #import "AppAlert.h"
 #import "AppUIManager.h"
+
 #import "NSDictionary+NilObject.h"
 
 #import "MesiboUIHelper/MesiboUIHelper.h"
@@ -25,11 +19,9 @@
 #import "MesiboCall/MesiboCall.h"
 #import "SamplePushKitNotify.h"
 
-//#import "CrashReporter/CrashReporter.h"
-
 #import <Intents/Intents.h>
 
-@interface AppDelegate ()
+@interface AppDelegate () <MesiboCallIncomingListener>
 
 @end
 
@@ -56,14 +48,15 @@
     MesiboCall *mesiboCall;
     
     SamplePushKitNotify *pushNotify;
-
+    
     AppDelegate *_thiz;
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-   
+    
     _thiz = self;
-
+    
+    [MesiboInstance addListener:self];
     
     if ([application respondsToSelector:@selector(isRegisteredForRemoteNotifications)])
     {
@@ -73,22 +66,26 @@
     }
     application.applicationIconBadgeNumber = 0;
     
-    [MesiboInstance addListener:self];
+    
+#if 0
+    // Enable it for your own file handler
     _fileTranserHandler = [[SampleAppFileTransferHandler alloc] init];
     [_fileTranserHandler initialize];
+#endif
     
     
     self.window = [[UIWindow alloc] initWithFrame:UIScreen.mainScreen.bounds];
+    
     
     [[UINavigationBar appearance] setBarTintColor:[UIColor getColor:PRIMARY_COLOR]];
     [[UINavigationBar appearance] setTranslucent:NO];
     
     
     NSDictionary *attributes = @{
-                                 NSUnderlineStyleAttributeName: @1,
-                                 NSForegroundColorAttributeName : [UIColor getColor:TITLE_TXT_COLOR],
-                                 NSFontAttributeName: [UIFont fontWithName:@"HelveticaNeue-Bold" size:17]
-                                 };
+        NSUnderlineStyleAttributeName: @1,
+        NSForegroundColorAttributeName : [UIColor getColor:TITLE_TXT_COLOR],
+        NSFontAttributeName: [UIFont fontWithName:@"HelveticaNeue-Bold" size:17]
+    };
     
     [[UINavigationBar appearance] setTitleTextAttributes:attributes];
     
@@ -103,12 +100,12 @@
     SampleAPIInstance; // just to intitialize
     
     [SampleAPIInstance setOnLogout:^(id parent) {
-         dispatch_async(dispatch_get_main_queue(), ^{
-             if(parent) {
-                 [(UIViewController *)parent dismissViewControllerAnimated:NO completion:nil];
-             }
-             [self launchLoginUI];
-         });
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if(parent) {
+                [(UIViewController *)parent dismissViewControllerAnimated:NO completion:nil];
+            }
+            [self launchLoginUI];
+        });
     }];
     
     
@@ -117,15 +114,27 @@
         [self launchMainUI];
     } else {
         
-        // we check without handler so that welcome controller can be launched in parallel
         [self doLaunchWelcomeController];
     }
     
+    
     pushNotify = [SamplePushKitNotify getInstance];
     
+    UNUserNotificationCenter* center = [UNUserNotificationCenter currentNotificationCenter];
+    center.delegate = self;
+
     return YES;
 }
 
+-(void)userNotificationCenter:(UNUserNotificationCenter *)center willPresentNotification:(UNNotification *)notification withCompletionHandler:(void (^)(UNNotificationPresentationOptions options))completionHandler {
+    
+    completionHandler(UNNotificationPresentationOptionBadge | UNNotificationPresentationOptionAlert | UNNotificationPresentationOptionSound);
+    
+}
+
+- (void)userNotificationCenter:(UNUserNotificationCenter *)center didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void(^)(void))completionHandler {
+    completionHandler();
+}
 
 - (void)applicationWillResignActive:(UIApplication *)application {
 }
@@ -150,9 +159,8 @@
 }
 
 - (void)application:(UIApplication*)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData*)deviceToken {
-    // NSLog(@"My token is: %@", deviceToken);
     NSString * deviceTokenString = [[[[deviceToken description] stringByReplacingOccurrencesOfString: @"<" withString: @""] stringByReplacingOccurrencesOfString: @">" withString: @""]   stringByReplacingOccurrencesOfString: @" " withString: @""];
-    Log(@"the generated device token string is : %@",deviceTokenString);
+
     NSUInteger capacity = deviceToken.length * 2;
     NSMutableString *sbuf = [NSMutableString stringWithCapacity:capacity];
     const unsigned char *buf = deviceToken.bytes;
@@ -161,7 +169,6 @@
         [sbuf appendFormat:@"%02X", (int)buf[i]];
     }
     
-    //[SampleAPIInstance setAPNToken:deviceTokenString];
     [MesiboInstance setPushToken:sbuf voip:NO];
 }
 
@@ -178,7 +185,7 @@
     } else if (application.applicationState == UIApplicationStateBackground) {
         
     } else {
-
+        
     }
     
     [SampleAPIInstance setAPNCompletionHandler:completionHandler];
@@ -220,7 +227,6 @@
     self.window.rootViewController = controller;
     [self.window setRootViewController:controller];
     [self.window makeKeyAndVisible];
-    //[[UIApplication sharedApplication].keyWindow setRootViewController:rootViewController];
 }
 
 - (void)  onLogin:(NSString*)phone code:(NSString*)code akToken:(NSString *)akToken caller:(id)caller handler:(PhoneVerificationResultBlock) resultHandler {
@@ -246,17 +252,17 @@
         }
     };
     
+    
     [SampleAPIInstance login:phone code:code handler:handler];
-
-
+    
 }
 
 -(void) launchMesiboUI {
-    MesiboUiOptions *ui = [MesiboUI getUiOptions];
-    ui.emptyUserListMessage = @"No active conversations! Invite your family and friends to try mesibo.";
     
-    // set this to nil to remove 'Create a new group' in contacts list
-    //ui.createGroupTitle = nil;
+    
+    MesiboUiOptions *ui = [MesiboUI getUiOptions];
+    ui.emptyUserListMessage = @"No active conversations! Click on the message icon to send a message.";
+    
     
     UIViewController *mesiboController = [MesiboUI getMesiboUIViewController];
     UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:mesiboController];
@@ -264,15 +270,15 @@
     
     
     [AppUIManager setDefaultParent:navigationController];
-    
-    //[AppUIManager launchMesiboUI:self.window.rootViewController withMainWindow:self.window];
+
+    // callkit will be automatically disabled for China
     mesiboCall = [MesiboCall startWith:nil name:@"mesibo" icon:nil callKit:YES];
 }
 
 -(void) launchMainUI {
     
-    MesiboUserProfile *sp = [MesiboInstance getSelfProfile];
-    if([SampleAPI isEmpty:sp.name]) {
+    MesiboProfile *sp = [MesiboInstance getSelfProfile];
+    if([SampleAPI isEmpty:[sp getName]]) {
         [MesiboInstance runInThread:YES handler:^{
             [self launchEditProfile];
         }];
@@ -283,27 +289,28 @@
     
     [ContactUtilsInstance initPhonebook:syncedContacts onPermission: ^(BOOL result) {
         if(!result) {
-            //permission denied
-            [AppAlert showDialogue:@"Mesibo requires contact permission so that you can communicate with your contacts. You MUST restart App and grant necessary permissions to continue!" withTitle:@"Permission Required" handler:^{
-                //
+            [MesiboInstance runInThread:YES handler:^{
+                
+                [AppAlert showDialogue:@"Permissions required!" withTitle:@"Mesibo requires contact permission so that you can communicate with your contacts. You MUST restart App and grant the necessary permissions to continue!"];
+                
+                
             }];
             return;
         }
         
-        [SampleAPIInstance startSync];
         [MesiboInstance runInThread:YES handler:^{
             [self launchMesiboUI];
-        }
-         
-         ];
+            
+        }];
     }
+     
     onChange:^{
-        [SampleAPIInstance onContactsChanged];                           //<#code#>
+        [SampleAPIInstance startContactSync];
     }
      
      ];
 }
-         
+
 -(void) dismissAndlaunchMainUI:(UIViewController *)previousController {
     if(!previousController) {
         [self launchMainUI];
@@ -319,12 +326,12 @@
 -(void) launchLoginUIAfterLoginUiCheck {
     UIViewController  *loginController ;
     
-        loginController = [MesiboUIHelper startMobileVerification:^(id caller, NSString *phone, NSString *code, PhoneVerificationResultBlock resultBlock) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [(UIViewController*)caller resignFirstResponder];
-            });
-            [self onLogin:phone code:code akToken:nil caller:caller handler:resultBlock];
-        }];
+    loginController = [MesiboUIHelper startMobileVerification:^(id caller, NSString *phone, NSString *code, PhoneVerificationResultBlock resultBlock) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [(UIViewController*)caller resignFirstResponder];
+        });
+        [self onLogin:phone code:code akToken:nil caller:caller handler:resultBlock];
+    }];
     
     [self setRootController:loginController];
     mAppLaunchData.mBanners = nil;
@@ -332,16 +339,15 @@
 }
 
 -(void) launchLoginUI {
+    [self setupUiHelper];
     dispatch_async(dispatch_get_main_queue(), ^{
         [self launchLoginUIAfterLoginUiCheck];
     });
     
 }
 
-
-//extern void *query_mesibo_webrtc();
-- (void) doLaunchWelcomeController {
-    
+-(void) setupUiHelper {
+    mAppLaunchData = [[MesiboUiHelperConfig alloc] init];
     int countryCode = [ContactUtilsInstance getCountryCode];
     if(countryCode < 1)
         countryCode = 1;
@@ -350,9 +356,20 @@
     
     mAppLaunchData.mCountryCode = [NSString stringWithFormat:@"%d", countryCode];
     mAppLaunchData.mAppName = @"Mesibo";
-    mAppLaunchData.mAppTag = @"Messaging and Beyond";
+    mAppLaunchData.mAppTag = @"Messaging, Calls and Conferences";
     mAppLaunchData.mAppUrl = @"https://www.mesibo.com";
     mAppLaunchData.mAppWriteUp = @"";
+    
+    mAppLaunchData.mLoginTitle = @"welcome To mesibo";
+    mAppLaunchData.mLoginDesc = @"Enter a valid phone number to begin";
+    mAppLaunchData.mLoginBottomDesc = @"IMPORTANT: We will NOT send OTP.  Instead, you can generate OTP from the mesibo console. Sign up at https://mesibo.com/console";
+    mAppLaunchData.mOtpTitle = @"Enter OTP";
+    mAppLaunchData.mOtpDesc = @"Enter OTP for %@";
+    mAppLaunchData.mOtpBottomDesc = mAppLaunchData.mLoginBottomDesc;
+    
+    mAppLaunchData.mLoginTitleColor = 0xFF00868b;
+    mAppLaunchData.mLoginDescColor = 0xFF444444;
+    mAppLaunchData.mLoginBottomDescColor = 0xAAFF0000;
     
     mAppLaunchData.mTextColor = 0xFF172727;
     mAppLaunchData.mBackgroundColor = 0xFFFFFFFF;
@@ -367,8 +384,8 @@
     WelcomeBanner *banner = nil;
     
     banner = [WelcomeBanner new];
-    banner.mTitle = @"Messaging in your apps";
-    banner.mDescription = @"Over 79% of all apps require some form of communications. Mesibo is built from ground-up to power this!";
+    banner.mTitle = @"Messaging, Calls and Conferences";
+    banner.mDescription = @"Add messaging, Video and Voice calls & conferencing in your apps in no time. Mesibo is built from ground-up to power this!";
     banner.mImage = [UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:[NSString stringWithFormat:@"welcome"] ofType:@"png"]];
     banner.mColor = 0xff00868b; //0xff0f9d58;
     [banners addObject:banner];
@@ -390,8 +407,8 @@
 #endif
     
     banner = [WelcomeBanner new];
-    banner.mTitle = @"Open & Free Platform";
-    banner.mDescription = @"Quickly integrate Mesibo in your own app using freely available source code";
+    banner.mTitle = @"Open Source";
+    banner.mDescription = @"Quickly integrate Mesibo in your own apps by downloading our source code from GitHub";
     banner.mImage = [UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:[NSString stringWithFormat:@"opensource_ios"] ofType:@"png"]];
     banner.mColor = 0xff054a61; //0xfff4b400;
     [banners addObject:banner];
@@ -408,6 +425,12 @@
     mAppLaunchData.mBanners = banners;
     
     [MesiboUIHelper setUiConfig:mAppLaunchData];
+}
+
+//extern void *query_mesibo_webrtc();
+- (void) doLaunchWelcomeController {
+    
+    [self setupUiHelper];
     
     UIViewController *welcomeController = [MesiboUIHelper getWelcomeViewController:^(UIViewController *parent, BOOL result) {
         
@@ -420,18 +443,19 @@
 
 -(void) launchEditProfile {
     UIStoryboard *storybord = [UIStoryboard storyboardWithName:@"Main" bundle:[NSBundle mainBundle]];
-    EditSelfProfileViewController *editSelfProfileController =[storybord instantiateViewControllerWithIdentifier:@"EditSelfProfileViewController"];
+    EditProfileController *editSelfProfileController =[storybord instantiateViewControllerWithIdentifier:@"EditSelfProfileViewController"];
     
     [editSelfProfileController setLaunchMesiboCallback:^{
-        [self launchMainUI]; //don't launch mesibo ui directly
+        [self launchMainUI];
     }];
     
+    [editSelfProfileController setProfile:[MesiboInstance getSelfProfile]];
+    
     [self setRootController:editSelfProfileController];
-   
-   // [AppUIManager launchEditProfile:self.window.rootViewController  withMainWindow:self.window];
+    
 }
 
--(NSArray *) Mesibo_onGetMenu:(id)parent type:(int) type profile:(MesiboUserProfile *)profile {
+-(NSArray *) Mesibo_onGetMenu:(id)parent type:(int) type profile:(MesiboProfile *)profile {
     
     NSArray*btns = nil;
     
@@ -455,7 +479,7 @@
         
         btns = @[button, button1];
     } else {
-        if(profile && !profile.groupid) {
+        if(profile && ![profile getGroupId]) {
             UIButton *button =  [UIButton buttonWithType:UIButtonTypeCustom];
             [button setImage:[UIImage imageNamed:@"ic_call_white"] forState:UIControlStateNormal];
             [button setFrame:CGRectMake(0, 0, 44, 44)];
@@ -475,7 +499,7 @@
     
 }
 
-- (BOOL)Mesibo_onMenuItemSelected:(id)parent type:(int)type profile:(MesiboUserProfile *)profile item:(int)item {
+- (BOOL)Mesibo_onMenuItemSelected:(id)parent type:(int)type profile:(MesiboProfile *)profile item:(int)item {
     // userlist menu are active
     if(type == 0) { // USERLIST
         if(item == 1) {   //item == 0 is reserved
@@ -485,10 +509,10 @@
         
     } else { // MESSAGEBOX
         if(item == 0) {
-            [MesiboCallInstance callUi:parent address:profile.address video:NO];
+            [MesiboCallInstance callUi:parent address:[profile getAddress] video:NO];
         }else if (item ==1) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                [MesiboCallInstance callUi:parent address:profile.address video:YES];
+                [MesiboCallInstance callUi:parent address:[profile getAddress] video:YES];
                 
             });
         }
@@ -498,13 +522,13 @@
     return true;
 }
 
-- (void)Mesibo_onShowProfile:(id)parent profile:(MesiboUserProfile *)profile {
+- (void)Mesibo_onShowProfile:(id)parent profile:(MesiboProfile *)profile {
     [AppUIManager launchProfile:parent profile:profile];
     
 }
 
 
-- (void) Mesibo_onDeleteProfile:(id)parent profile:(MesiboUserProfile *)profile handler:(Mesibo_onSetGroupHandler)handler{
+- (void) Mesibo_onDeleteProfile:(id)parent profile:(MesiboProfile *)profile handler:(Mesibo_onSetGroupHandler)handler{
     
     
 }
@@ -512,10 +536,10 @@
 -(void) logoutFromApplication:(UIViewController *)sender {
     [self launchLoginUI];
     
-    //dispatch_async(dispatch_get_main_queue(), ^{
-         //[self doLaunchWelcomeController];
-    //});
+
 }
+
+
 
 
 @end

@@ -1,6 +1,3 @@
-//
-//  SampleAppListeners.m
-//  Copyright © 2018 Mesibo. All rights reserved.
 
 #import "SampleAppListeners.h"
 #import "SampleAPI.h"
@@ -29,13 +26,10 @@
 
 -(void) initialize {
     [MesiboInstance addListener:self];
-    // if you need to customize, set listener
     //[MesiboCallInstance setListener:self];
 }
 
 -(void) Mesibo_OnMessage:(MesiboParams *)params data:(NSData *)data {
-    [SampleAPIInstance autoAddContact:params];
-    
     if([MesiboInstance isReading:params])
         return;
     
@@ -52,7 +46,6 @@
 }
 
 -(void) Mesibo_onFile:(MesiboParams *)params file:(MesiboFileInfo *)file {
-    [SampleAPIInstance autoAddContact:params];
     
     if([MesiboInstance isReading:params])
         return;
@@ -62,7 +55,6 @@
 }
 
 -(void) Mesibo_onLocation:(MesiboParams *)params location:(MesiboLocation *)location {
-    [SampleAPIInstance autoAddContact:params];
     
     if([MesiboInstance isReading:params])
         return;
@@ -72,7 +64,6 @@
 
 // so that we get contact while user has started typing
 -(void) Mesibo_onActivity:(MesiboParams *)params activity:(int)activity {
-    [SampleAPIInstance autoAddContact:params];
 }
 
 -(void) Mesibo_OnConnectionStatus:(int)status {
@@ -93,98 +84,42 @@
         [SampleAPIInstance startOnlineAction];
     }
     
+    
 }
 
--(BOOL) Mesibo_onUpdateUserProfiles:(MesiboUserProfile *)profile {
+
+-(void) Mesibo_onGroupJoined:(MesiboProfile *) groupProfile {
+    NSString *msg = [NSString stringWithFormat:@"You have been added to the group %@", [groupProfile  getName]];
+    [SampleAppNotifyInstance notify:SAMPLEAPP_NOTIFYTYPE_OTHER subject:@"New group" message:msg];
+}
+
+-(BOOL) Mesibo_onGetProfile:(MesiboProfile *)profile {
+
+    if(!profile) return YES;
     
-    /* Note: You must not call setProfile from here */
-    
-    if(profile.flag&MESIBO_USERFLAG_DELETED) {
-        
-        // TBD, in fact, for both user and group profile we need to do
-        if(profile.groupid) {
-            profile.lookedup = YES; // else it will be recursive call from getProfile
-            [SampleAPIInstance updateDeletedGroup:profile.groupid];
-        }
-        
+    if([profile getGroupId]) {
+        [profile setLookedup:YES];
         return YES;
     }
     
-    if(profile && profile.groupid) {
-        profile.status = [SampleAPIInstance groupStatusFromMembers:profile.groupMembers];
-        return YES;
-    }
-    
-    // Called by Mesibi UI if contacts need update, we dont use it
-    if(!profile && profile.address) {
+    if(![profile getAddress]) {
         return NO;
     }
-    
-    if(![SampleAPI isEmpty:profile.address]) {
-        PhonebookContact *c = [ContactUtilsInstance lookup:profile.address returnCopy:NO];
-        if(!c || !c.name)
-            return NO;
+
+    //TBD, check if phonebook is ready
+    PhonebookContact *c = [ContactUtilsInstance lookup:[profile getAddress] returnCopy:NO];
+    if(!c || !c.name)
+        return NO;
         
-        if([SampleAPI equals:c.name old:profile.name ])
-            return NO;
+    if([SampleAPI equals:c.name old:[profile getName]])
+        return NO;
         
-        profile.name = c.name;
-        return YES;
-    }
-    
-    return NO; //group
+    [profile setName:c.name];
+    return YES;
 }
 
-- (void)Mesibo_onShowProfile:(id)parent profile:(MesiboUserProfile *)profile {
+- (void)Mesibo_onShowProfile:(id)parent profile:(MesiboProfile *)profile {
     [AppUIManager launchProfile:parent profile:profile];
-}
-
-
--(void) Mesibo_onSetGroup:(id)parent profile:(MesiboUserProfile *)profile type:(int)type members:(NSArray *)members handler:(Mesibo_onSetGroupHandler)handler {
-    [[UIManager getInstance] addProgress:((UIViewController *)(parent)).view];
-    [[UIManager getInstance] showProgress];
-    [SampleAPIInstance setGroup:profile members:members handler:^(int result, NSDictionary *response) {
-        [[UIManager getInstance] hideProgress];
-        u_int32_t groupid = [[response objectForKey:@"gid"] unsignedIntValue];
-        handler(groupid);
-    }];
-}
-
--(void) Mesibo_onGetGroup:(id)parent groupid:(uint32_t)groupid handler:(Mesibo_onSetGroupHandler)handler {
-    //[SampleAPIInstance getGroup:groupid handler:handler];
-}
-
--(NSArray *) getGroupMembers:(NSString*) members {
-    if([SampleAPI isEmpty:members])
-        return nil;
-    
-    NSArray *s = [members componentsSeparatedByString: @":"];
-    if(!s || s.count < 2)
-        return nil;
-    
-    NSArray *users = [s[1] componentsSeparatedByString: @","];
-    if(!users)
-        return nil;
-    
-    
-    NSMutableArray *m = [NSMutableArray new];
-    
-    for(int i=0; i < users.count; i++) {
-        MesiboUserProfile *u = [MesiboInstance getUserProfile:users[i]];
-        if(!u)
-            u = [MesiboInstance createProfile:users[i] groupid:0 name:nil];
-        
-        [m addObject:u];
-    }
-    
-    return m;
-}
-
--(NSArray *) Mesibo_onGetGroupMembers:(id)parent groupid:(uint32_t)groupid {
-    MesiboUserProfile *profile = [MesiboInstance getProfile:nil groupid:groupid];
-    if(!profile) return nil;
-    
-    return [self getGroupMembers:profile.groupMembers];
 }
 
 -(BOOL) Mesibo_OnMessageFilter:(MesiboParams *)params direction:(int)direction data:(NSData *)data {
@@ -198,49 +133,6 @@
     if(![data length])
         return NO;
     
-    NSError *jsonerror = nil;
-    NSMutableDictionary *returnedDict = nil;
-    id jsonObject = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&jsonerror];
-    
-    if (jsonerror != nil) {
-        return NO;
-    }
-    
-    if (![jsonObject isKindOfClass:[NSArray class]]) {
-        //LOGD(@"its probably a dictionary");
-        returnedDict = (NSMutableDictionary *)jsonObject;
-    }
-    
-    if(!returnedDict)
-        return NO;
-    
-    NSString *subject = (NSString *)[returnedDict objectForKeyOrNil:@"subject"];
-    NSString *phone = (NSString *)[returnedDict objectForKeyOrNil:@"phone"];
-    
-    if(subject) {
-        NSString *name = (NSString *)[returnedDict objectForKeyOrNil:@"name"];
-        NSString *msg = (NSString *)[returnedDict objectForKeyOrNil:@"msg"];
-        if(phone) {
-            PhonebookContact *c = [ContactUtilsInstance lookup:phone returnCopy:NO];
-            if(c && [c.name length] > 0) {
-                name = c.name;
-            }
-        }
-        
-        if(!name)
-            name = phone;
-        
-        if(name) {
-            subject = [subject stringByReplacingOccurrencesOfString:@"%NAME%" withString:name];
-            
-            if(msg)
-                msg = [msg stringByReplacingOccurrencesOfString:@"%NAME%" withString:name];
-        }
-        
-        [SampleAppNotifyInstance notify:SAMPLEAPP_NOTIFYTYPE_OTHER subject:subject message:msg];
-    }
-    
-    [SampleAPIInstance createContact:returnedDict serverts:([MesiboInstance getTimestamp]-params.ts)/1000 selfProfile:NO refresh:YES visibility:VISIBILITY_UNCHANGED];
     
     return NO;
     
@@ -255,15 +147,15 @@
     
 }
 
--(BOOL) MesiboCall_onNotifyIncoming:(int)type profile:(MesiboUserProfile *)profile video:(BOOL)video {
+-(BOOL) MesiboCall_onNotifyIncoming:(int)type profile:(MesiboProfile *)profile video:(BOOL)video {
     NSString *n = nil;
     NSString *subj = nil;
     if(MESIBOCALL_NOTIFY_INCOMING == type) {
         subj = @"Mesibo Incoming Call";
-        n = [NSString stringWithFormat:@"Mesibo %scall from %@", video?"Video ":"", profile.name];
+        n = [NSString stringWithFormat:@"Mesibo %scall from %@", video?"Video ":"", [profile getName]];
     } else if(MESIBOCALL_NOTIFY_MISSED == type) {
         subj = @"Mesibo Missed Call";
-        n = [NSString stringWithFormat:@"You missed a Mesibo %scall from %@", video?"Video ":"", profile.name];
+        n = [NSString stringWithFormat:@"You missed a Mesibo %scall from %@", video?"Video ":"", [profile getName]];
     }
     
     if(n) {
@@ -279,7 +171,7 @@
     
 }
 
-- (MesiboCallProperties * _Nullable)MesiboCall_OnIncoming:(MesiboUserProfile * _Nonnull)profile video:(BOOL)video {
+- (MesiboCallProperties * _Nullable)MesiboCall_OnIncoming:(MesiboProfile * _Nonnull)profile video:(BOOL)video {
     MesiboCallProperties *cp = [MesiboCallInstance createCallProperties:video];
     
     //cp.parent = self.window.rootViewController;
@@ -289,7 +181,7 @@
     
 }
 
-- (BOOL)MesiboCall_OnNotify:(int)type profile:(MesiboUserProfile * _Nonnull)profile video:(BOOL)video {
+- (BOOL)MesiboCall_OnNotify:(int)type profile:(MesiboProfile * _Nonnull)profile video:(BOOL)video {
     return NO;
 }
 
@@ -300,6 +192,5 @@
     return NO;
 
 }
-
 
 @end

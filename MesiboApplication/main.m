@@ -1,7 +1,3 @@
-//
-//  main.m
-//  TestMesiboUIHelper
-//
 //  Created by Mesibo on 14/10/17.
 //  Copyright © 2018 Mesibo. All rights reserved.
 //

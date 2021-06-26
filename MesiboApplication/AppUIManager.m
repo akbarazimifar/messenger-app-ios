@@ -10,16 +10,17 @@
 #import "ProfileViewerController.h"
 #import "CommonAppUtils.h"
 #import "SettingsViewController.h"
-#import "EditSelfProfileViewController.h"
+#import "EditProfileController.h"
 #import <MesiboUI/MesiboUI.h>
 #import "Includes.h"
 
 @implementation AppUIManager
 
 
-+ (void) launchProfile:(id)parent profile:(MesiboUserProfile *)profile{
++ (void) launchProfile:(id)parent profile:(MesiboProfile *)profile{
     UIStoryboard *storyboard = [CommonAppUtils getMeProfileStoryBoard];
     ProfileViewerController *pvc = [storyboard instantiateViewControllerWithIdentifier:@"ProfileViewerController"];
+    pvc.modalPresentationStyle = UIModalPresentationFullScreen;
     if([pvc isKindOfClass:[ProfileViewerController class]]) {
         pvc.mUserData = profile;
         //[parent presentViewController:pvc animated:YES completion:nil];
@@ -32,20 +33,11 @@
     UIStoryboard *storyboard = [CommonAppUtils getMeSettingsStoryBoard];
     SettingsViewController  *mtvc = [storyboard instantiateViewControllerWithIdentifier:@"SettingsViewController"];
     UINavigationController *unc = [[UINavigationController alloc] initWithRootViewController:mtvc];
+    unc.modalPresentationStyle = UIModalPresentationFullScreen;
+
     [parent presentViewController:unc animated:YES completion:nil];
 }
 
-
-+(void) launchEditProfile:(UIViewController*) RootController withMainWindow: (UIWindow*) mainWindow {
-    UIStoryboard *storybord = [UIStoryboard storyboardWithName:@"Main" bundle:[NSBundle mainBundle]];
-    EditSelfProfileViewController *editSelfProfileController =[storybord instantiateViewControllerWithIdentifier:@"EditSelfProfileViewController"];
-    [editSelfProfileController setLaunchMesiboCallback:^{
-        [AppUIManager launchMesiboUI:RootController withMainWindow:mainWindow];
-    }];
-    RootController = editSelfProfileController;
-    [mainWindow setRootViewController:RootController];
-    [mainWindow makeKeyAndVisible];
-}
 
 //UINavigationController *_mNavigationController = nil;
 UIViewController *_mAppParent = nil;
@@ -53,45 +45,6 @@ UIViewController *_mAppParent = nil;
     _mAppParent = controller;
 }
 
-+(void) launchVC_mainThread:(UIViewController *)parent vc:(UIViewController *)vc {
-    
-    if(!parent)
-        parent = _mAppParent;
-    
-    
-  
-        [parent presentViewController:vc animated:YES completion:nil];
-    
-}
-
-+(void) launchVC:(UIViewController *)parent vc:(UIViewController *)vc {
-    
-    if(vc.isBeingPresented)
-        return;
-    
-    [MesiboInstance runInThread:YES handler:^{
-        [self launchVC_mainThread:parent vc:vc];
-    }];
-}
-
-+(void) launchMesiboUI:(UIViewController*) rootController withMainWindow: (UIWindow*) mainWindow {
-    
-    MesiboUiOptions *ui = [MesiboUI getUiOptions];
-    ui.emptyUserListMessage = @"No active conversations! Invite your family and friends to try mesibo.";
-    
-    UIViewController *old = mainWindow.rootViewController;
-
-    
-    UIViewController *mesiboController = [MesiboUI getMesiboUIViewController];
-    UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:mesiboController];
-    rootController = navigationController;
-    _mAppParent = rootController;
-    [mainWindow setRootViewController:rootController];
-    [mainWindow makeKeyAndVisible];
-    
-    //if(old)
-        //[old dismissViewControllerAnimated:NO completion:nil];
-}
 
 +(void) showImageFile:(ImagePicker*) im withParentController:(id)Parent withImage:(UIImage*) image withTitle:(NSString *) title{
     [im showPhotoInViewer:Parent withImage:image withTitle:title];

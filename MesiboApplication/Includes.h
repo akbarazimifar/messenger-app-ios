@@ -3,14 +3,11 @@
 //  TestMesiboUI
 //
 //  Created by Mesibo on 06/10/17.
-//  Copyright © 2018 Mesibo. All rights reserved.
 //
 
-#ifndef Includes_h
-#define Includes_h
+#pragma once
 
 #import <mesibo/Mesibo.h>
 #import <mediapicker/ImagePicker.h>
-#import <MesiboUI/MesiboUi.h>
+#import <mesiboui/MesiboUI.h>
 
-#endif /* Includes_h */

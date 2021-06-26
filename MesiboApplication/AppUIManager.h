@@ -2,7 +2,7 @@
 //  AppUIManager.h
 //  TestMesiboUIHelper
 //
-//  Created by John Motiwala on 17/01/17.
+//  Created by John on 17/01/17.
 //  Copyright © 2018 Mesibo. All rights reserved.
 //
 
@@ -14,10 +14,8 @@
 
 @interface AppUIManager : NSObject
 
-+(void)launchProfile:(id)parent profile:(MesiboUserProfile *)profile ;
++(void)launchProfile:(id)parent profile:(MesiboProfile *)profile ;
 +(void) launchSettings:(id)parent;
-+(void) launchEditProfile:(UIViewController*) rootController withMainWindow: (UIWindow*) mainWindow;
-+(void) launchVC:(UIViewController *)parent vc:(UIViewController *)vc;
 +(void) showImageFile:(ImagePicker*) im withParentController:(id)Parent withImage:(UIImage*) image withTitle:(NSString *) title;
 +(void)  showImagesInViewer:(ImagePicker*) im withParentController:(id)Parent withImages:(NSArray*) imagepathArray withStartIndex:(int) index withTitle:(NSString *) title;
 +(void)  showEntireAlbum:(ImagePicker*) im withParentController:(id)Parent withAlbum:(NSMutableArray*) imagepathArray withTitle:(NSString *) title;

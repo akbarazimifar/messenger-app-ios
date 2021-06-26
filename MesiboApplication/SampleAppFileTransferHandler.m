@@ -97,6 +97,10 @@
         url = [[SampleAPIInstance getDownloadUrl] stringByAppendingString:url];
     }
     
+    //NSLog(@"Downloading: %@", url);
+    
+    //id x = [file getListener];
+    
     Mesibo_onHTTPProgress handler = ^BOOL(MesiboHttp *http, int state, int progress) {
         int status = [file getStatus];
         
