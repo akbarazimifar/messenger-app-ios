@@ -50,6 +50,8 @@
 @property (copy, nonatomic) NSString *offlineIndicationTitle;
 @property (copy, nonatomic) NSString *connectingIndicationTitle;
 @property (copy, nonatomic) NSString *noNetworkIndicationTitle;
+@property (copy, nonatomic) NSString *suspendedIndicationTitle;
+
 
 @property (copy, nonatomic) NSString *emptyUserListMessage;
 
@@ -66,8 +68,6 @@
 @property (assign, nonatomic) int messageBackgroundColorForPeer;
 @property (assign, nonatomic) int messagingBackgroundColor;
 
-
-@property (assign, nonatomic) uint64_t mTypingIndicationTimeMs;
 
 @property (assign, nonatomic) uint64_t mMaxImageFileSize;
 @property (assign, nonatomic) uint64_t mMaxVideoFileSize;
