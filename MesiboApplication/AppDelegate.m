@@ -442,7 +442,8 @@
 }
 
 -(void) launchEditProfile {
-    UIStoryboard *storybord = [UIStoryboard storyboardWithName:@"Main" bundle:[NSBundle mainBundle]];
+    NSBundle *bundle = [NSBundle mainBundle];
+    UIStoryboard *storybord = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     EditProfileController *editSelfProfileController =[storybord instantiateViewControllerWithIdentifier:@"EditSelfProfileViewController"];
     
     [editSelfProfileController setLaunchMesiboCallback:^{

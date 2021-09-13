@@ -2,8 +2,8 @@
 //  SampleAPI.m
 //  MesiboDevel
 //
-//  Updated by Grace on 23/12/19.
-//  Copyright © 2018 Mesibo. All rights reserved.
+//  Updated by Grace on 23/12/21.
+//  Copyright © 2021 Mesibo. All rights reserved.
 //
 
 #import "SampleAPI.h"

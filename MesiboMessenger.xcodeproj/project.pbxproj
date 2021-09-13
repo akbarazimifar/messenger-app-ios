@@ -45,6 +45,7 @@
 		3EA490681E38A08900492966 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3EA490671E38A08900492966 /* Accelerate.framework */; };
 		3EA4906A1E38A09200492966 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3EA490691E38A09200492966 /* MobileCoreServices.framework */; };
 		3EA4906C1E38A09900492966 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3EA4906B1E38A09900492966 /* SystemConfiguration.framework */; };
+		8808FD9626EF4A860040E133 /* EditProfileController.m in Sources */ = {isa = PBXBuildFile; fileRef = 88D671F72686EB48004B1570 /* EditProfileController.m */; };
 		8817FE7F1FF919C000ABB3F4 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8817FE7E1FF919BF00ABB3F4 /* AudioToolbox.framework */; };
 		8817FE811FF919CC00ABB3F4 /* VideoToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8817FE801FF919CC00ABB3F4 /* VideoToolbox.framework */; };
 		8817FE831FF91A5F00ABB3F4 /* CallKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8817FE821FF91A5F00ABB3F4 /* CallKit.framework */; };
@@ -592,6 +593,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8808FD9626EF4A860040E133 /* EditProfileController.m in Sources */,
 				88292D9C1E88D1B90008A4F7 /* SampleAppNotify.m in Sources */,
 				3EA4900B1E389AA700492966 /* AppAlert.m in Sources */,
 				3EA490101E389AA700492966 /* UIColors.m in Sources */,
@@ -776,7 +778,7 @@
 					"$(PROJECT_DIR)/Frameworks/MesiboUIHelper",
 					"$(PROJECT_DIR)",
 				);
-				MARKETING_VERSION = 1.4.4;
+				MARKETING_VERSION = 1.6.8;
 				PRODUCT_BUNDLE_IDENTIFIER = org.mesibo.messenger;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -807,7 +809,7 @@
 					"$(PROJECT_DIR)/Frameworks/MesiboUIHelper",
 					"$(PROJECT_DIR)",
 				);
-				MARKETING_VERSION = 1.4.4;
+				MARKETING_VERSION = 1.6.8;
 				PRODUCT_BUNDLE_IDENTIFIER = org.mesibo.messenger;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
