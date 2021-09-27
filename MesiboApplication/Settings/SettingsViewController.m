@@ -11,6 +11,7 @@
 #import "SampleAPI.h"
 #import <mesibo/mesibo.h>
 #import "AppUIManager.h"
+#import "MesiboCall/MesiboCall.h"
 
 @interface SettingsViewController ()
 
@@ -22,6 +23,7 @@
 
 @property (weak, nonatomic) IBOutlet UITableViewCell *mLogoutCell;
 @property (weak, nonatomic) IBOutlet UITableViewCell *mInviteCell;
+@property (weak, nonatomic) IBOutlet UITableViewCell *mRoomCell;
 @end
 
 @implementation SettingsViewController
@@ -85,36 +87,46 @@
             statusLabel.text = [up getStatus];
             
         }
-        break;
+            break;
+            
         case 1: {
+            cell = _mRoomCell;
+        }
+            break;
+        case 2: {
             cell = _mDataUsageCell;
         }
-        break;
-           case 2: {
-               cell = _mInviteCell;
-           }
-               break;
+            break;
         case 3: {
+            cell = _mInviteCell;
+        }
+            break;
+        case 4: {
             cell = _mAboutCell;
         }
-        break;
-           
-       case 4: {
-           cell = _mLogoutCell;
-       }
-           break;
-        
+            break;
+            
+        case 5: {
+            cell = _mLogoutCell;
+        }
+            break;
+            
     }
     return cell;}
 
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *theCellClicked = [tableView cellForRowAtIndexPath:indexPath];
-    if (theCellClicked == _mProfileCell) {
+    if(theCellClicked == _mRoomCell) {
+        [self dismissViewControllerAnimated:NO completion:nil];
+        [MesiboCallInstance groupCallJoinRoomUi:_mParent];
+    }
+    else if (theCellClicked == _mProfileCell) {
         UIStoryboard *storyboard  = [UIStoryboard storyboardWithName:@"Main" bundle:[NSBundle mainBundle]];
         EditProfileController *epc = [storyboard instantiateViewControllerWithIdentifier:@"EditSelfProfileViewController"];
         [self.navigationController pushViewController:epc animated:YES];
-    } else if(theCellClicked == _mLogoutCell) {
+    }
+    else if(theCellClicked == _mLogoutCell) {
         //[self.delegate logoutFromApplication:self];
         [SampleAPIInstance logout:NO parent:self];
         
@@ -124,7 +136,6 @@
         //[self.delegate logoutFromApplication:self];
         NSString *textToShare = [[SampleAPI getInstance] getInvite];
         [CommonAppUtils shareText:textToShare parent:self];
-        
     }
     
     

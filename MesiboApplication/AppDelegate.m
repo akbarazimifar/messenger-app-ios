@@ -480,14 +480,15 @@
         
         btns = @[button, button1];
     } else {
-        if(profile && ![profile getGroupId]) {
+        if(profile) {
+            uint32_t gid = [profile getGroupId];
             UIButton *button =  [UIButton buttonWithType:UIButtonTypeCustom];
-            [button setImage:[UIImage imageNamed:@"ic_call_white"] forState:UIControlStateNormal];
+            [button setImage:[UIImage imageNamed:gid?@"ic_call_add_white":@"ic_call_white"] forState:UIControlStateNormal];
             [button setFrame:CGRectMake(0, 0, 44, 44)];
             [button setTag:0];
             
             UIButton *vbutton =  [UIButton buttonWithType:UIButtonTypeCustom];
-            [vbutton setImage:[UIImage imageNamed:@"ic_videocam_white"] forState:UIControlStateNormal];
+            [vbutton setImage:[UIImage imageNamed:gid?@"ic_videocam_add_white":@"ic_videocam_white"] forState:UIControlStateNormal];
             [vbutton setFrame:CGRectMake(0, 0, 44, 44)];
             [vbutton setTag:1];
             
@@ -509,11 +510,20 @@
         }
         
     } else { // MESSAGEBOX
+        uint32_t gid = [profile getGroupId];
         if(item == 0) {
-            [MesiboCallInstance callUi:parent address:[profile getAddress] video:NO];
+            dispatch_async(dispatch_get_main_queue(), ^{
+            if(gid)
+                [MesiboCallInstance groupCallUi:parent gid:gid video:NO publish:YES];
+            else
+                [MesiboCallInstance callUi:parent address:[profile getAddress] video:NO];
+            });
         }else if (item ==1) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                [MesiboCallInstance callUi:parent address:[profile getAddress] video:YES];
+                if(gid)
+                    [MesiboCallInstance groupCallUi:parent gid:gid video:YES publish:YES];
+                else
+                    [MesiboCallInstance callUi:parent address:[profile getAddress] video:YES];
                 
             });
         }

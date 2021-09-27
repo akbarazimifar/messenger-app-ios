@@ -34,6 +34,7 @@
     SettingsViewController  *mtvc = [storyboard instantiateViewControllerWithIdentifier:@"SettingsViewController"];
     UINavigationController *unc = [[UINavigationController alloc] initWithRootViewController:mtvc];
     unc.modalPresentationStyle = UIModalPresentationFullScreen;
+    mtvc.mParent = parent;
 
     [parent presentViewController:unc animated:YES completion:nil];
 }
