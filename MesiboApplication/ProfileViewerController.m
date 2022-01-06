@@ -229,7 +229,7 @@
     //_mCustomNotification.hidden = YES;
    // _mViewBetweenMuteAndCustom.hidden = YES;
     
-    [_mMuteSwitch setOn:[mUserProfile isMuted]];
+    [_mMuteSwitch setOn:[mUserProfile isBlocked]];
     
     if([mUserProfile getGroupId] > 0) {
         
@@ -363,6 +363,14 @@
     }
     
     [self reloadMembersTable];
+}
+
+-(void) Mesibo_onGroupJoined:(MesiboProfile *)groupProfile {
+    
+}
+
+-(void) Mesibo_onGroupError:(MesiboProfile *)groupProfile error:(uint32_t)error {
+    
 }
 
 
@@ -595,8 +603,8 @@
 }
 
 - (IBAction)onMute:(id)sender {
-    [mUserProfile toggleMute];
-    [mUserProfile toggleMute];
+    [mUserProfile toggleBlock];
+    [mUserProfile save];
 }
 
 
