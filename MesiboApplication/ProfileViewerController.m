@@ -71,7 +71,6 @@
 @property (weak, nonatomic) IBOutlet UIButton *meditBtn;
 @property (weak, nonatomic) IBOutlet UIView *mBlockView;
 
-@property (strong, nonatomic) Contacts *contacts;
 
 @end
 

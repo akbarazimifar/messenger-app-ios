@@ -165,8 +165,8 @@
             timestampString = "595945959.179222"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "513"
-            endingLineNumber = "513"
+            startingLineNumber = "516"
+            endingLineNumber = "516"
             landmarkName = "-logout:parent:"
             landmarkType = "7">
          </BreakpointContent>
@@ -182,8 +182,8 @@
             timestampString = "595945959.179557"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "496"
-            endingLineNumber = "496"
+            startingLineNumber = "499"
+            endingLineNumber = "499"
             landmarkName = "-logout:parent:"
             landmarkType = "7">
          </BreakpointContent>
@@ -199,8 +199,8 @@
             timestampString = "595945959.179835"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "464"
-            endingLineNumber = "464"
+            startingLineNumber = "467"
+            endingLineNumber = "467"
             landmarkName = "-phoneBookLookup:"
             landmarkType = "7">
          </BreakpointContent>
@@ -216,8 +216,8 @@
             timestampString = "595945959.180115"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "626"
-            endingLineNumber = "626"
+            startingLineNumber = "629"
+            endingLineNumber = "629"
             landmarkName = "isAppStoreVersion()"
             landmarkType = "9">
          </BreakpointContent>
