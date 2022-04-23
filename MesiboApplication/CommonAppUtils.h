@@ -27,4 +27,5 @@
 + (NSString*) getDefaultProfilePath;
 + (UIStoryboard *)getMeSettingsStoryBoard ;
 +(void)shareText:(NSString *)textToShare parent:(UIViewController *)parent;
++ (void)styleLight:(UIView *)view;
 @end

@@ -13,7 +13,7 @@
 
 
 #define TEXTVIEW_PLACEHOLDER @"Type status"
-@interface EditProfileController ()<UITextFieldDelegate, UITextViewDelegate>
+@interface EditProfileController ()<UITextFieldDelegate, UITextViewDelegate, MesiboDelegate>
 @property (weak, nonatomic) IBOutlet UILabel *mPhoneNumber;
 @property (weak, nonatomic) IBOutlet UIImageView *mProfilePicture;
 @property (weak, nonatomic) IBOutlet UIButton *mPictureEditBtn;
@@ -317,5 +317,15 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
+-(void) Mesibo_onProfileUpdated:(MesiboProfile *)profile  {
+    
+    
+}
+
+-(void) Mesibo_OnMessage:(MesiboMessage *)message {
+    
+}
+
 
 @end

@@ -21,6 +21,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *mChatBtn;
 @property (weak, nonatomic) IBOutlet UIButton *mCustomNotification;
 @property (weak, nonatomic) IBOutlet UIView *mViewBetweenMuteAndCustom;
+@property (weak, nonatomic) IBOutlet UIView *mE2eview;
 
 @property (weak, nonatomic) IBOutlet UILabel *mMediaFileCounter;
 

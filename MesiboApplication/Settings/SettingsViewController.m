@@ -24,6 +24,8 @@
 @property (weak, nonatomic) IBOutlet UITableViewCell *mLogoutCell;
 @property (weak, nonatomic) IBOutlet UITableViewCell *mInviteCell;
 @property (weak, nonatomic) IBOutlet UITableViewCell *mRoomCell;
+@property (weak, nonatomic) IBOutlet UITableViewCell *mE2EECell;
+
 @end
 
 @implementation SettingsViewController
@@ -45,6 +47,8 @@
     [button setFrame:CGRectMake(0, 0, 24, 24)];
     UIBarButtonItem *barButton = [[UIBarButtonItem alloc] initWithCustomView:button];
     self.navigationItem.leftBarButtonItem = barButton;
+    
+    [CommonAppUtils styleLight:self.view];
     
 
 }
@@ -94,19 +98,24 @@
         }
             break;
         case 2: {
+            cell = _mE2EECell;
+        }
+            break;
+            
+        case 3: {
             cell = _mDataUsageCell;
         }
             break;
-        case 3: {
+        case 4: {
             cell = _mInviteCell;
         }
             break;
-        case 4: {
+        case 5: {
             cell = _mAboutCell;
         }
             break;
             
-        case 5: {
+        case 6: {
             cell = _mLogoutCell;
         }
             break;
@@ -137,8 +146,9 @@
         NSString *textToShare = [[SampleAPI getInstance] getInvite];
         [CommonAppUtils shareText:textToShare parent:self];
     }
-    
-    
+    else if(theCellClicked == _mE2EECell) {
+        [MesiboUI showEndToEncEncryptionInfo:self profile:[MesiboInstance getSelfProfile]];
+    }
 }
 
 @end

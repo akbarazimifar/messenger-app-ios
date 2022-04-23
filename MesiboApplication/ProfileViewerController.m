@@ -69,6 +69,9 @@
 
 @property (weak, nonatomic) IBOutlet UIButton *mAddtoExistingBtn;
 @property (weak, nonatomic) IBOutlet UIButton *meditBtn;
+@property (weak, nonatomic) IBOutlet UIView *mBlockView;
+
+@property (strong, nonatomic) Contacts *contacts;
 
 @end
 
@@ -201,6 +204,11 @@
     linkTap.numberOfTapsRequired=1;
     [_mOpenFullGalleryView addGestureRecognizer:linkTap];
     
+    UITapGestureRecognizer *e2eeTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(openE2EEInfo)];
+    e2eeTap.numberOfTapsRequired=1;
+    [_mE2eview addGestureRecognizer:e2eeTap];
+    
+    
     [self fillUserData];
     
     if(0) {
@@ -231,7 +239,7 @@
     
     [_mMuteSwitch setOn:[mUserProfile isBlocked]];
     
-    if([mUserProfile getGroupId] > 0) {
+    if([mUserProfile isGroup]) {
         
         _mAddToContactsHeightConstraint.constant = 0;
         [_mNewContactBtn setHidden:YES];
@@ -262,6 +270,11 @@
         UITapGestureRecognizer *addMemeberTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(editGroupAndMemebers)];
         linkTap.numberOfTapsRequired=1;
         [_mAddMemberView addGestureRecognizer:addMemeberTap];
+        
+        if(![mUserProfile isActive]) _mExitBtn.hidden = YES;
+        
+        _mBlockView.hidden = YES;
+        [self hideView:_mBlockView];
         
     }else {
         
@@ -369,6 +382,10 @@
     
 }
 
+-(void) Mesibo_onGroupLeft:(MesiboProfile *)groupProfile {
+    NSLog(@"Group Left %u", [groupProfile getGroupId]);
+}
+
 -(void) Mesibo_onGroupError:(MesiboProfile *)groupProfile error:(uint32_t)error {
     
 }
@@ -426,6 +443,10 @@
     
 }
 
+-(void)openE2EEInfo {
+    [MesiboUI showEndToEncEncryptionInfo:self profile:mUserProfile];
+}
+
 - (void) openMediaGallery {
     
     // if data is there then only show it in medai viewer
@@ -451,7 +472,7 @@
         
     }
     
-    _mUserName.text = [mUserProfile getName];
+    _mUserName.text = [mUserProfile getNameOrAddress:@"+"];
     
     // check userstatus api in testing //
     uint64_t lastSeen = [MesiboInstance getTimestamp] - [mUserProfile getLastActiveTime];
@@ -584,7 +605,7 @@
         
         if([SampleAPI equals:phone old:[m getAddress]]) {
             mSelfMember = m;
-            if([m isAdmin])
+            if([m isAdmin] && [mUserProfile isActive])
                 [self uiChangeForAdmin];
         }
           
@@ -883,7 +904,8 @@
     profileImageView.layer.masksToBounds = YES;
     
     UILabel *name = (UILabel *)[cell viewWithTag:101];
-    name.text = [mp getName];
+    
+    name.text = [mp getNameOrAddress:@"+"];
     
     UILabel *status = (UILabel*) [cell viewWithTag:102];
     status.text = [mp getStatus];
@@ -981,7 +1003,14 @@
 }
 
 - (IBAction)deleteGroup:(id)sender {
-    [[mUserProfile getGroupProfile] deleteGroup];
+    if(mSelfMember && [mSelfMember isAdmin])
+        [[mUserProfile getGroupProfile] deleteGroup];
+    else
+        [[mUserProfile getGroupProfile] leave];
+    
+    //[MesiboInstance removeListner:self];
+    //[self  dismissViewControllerAnimated:YES completion:nil];
+    [self.navigationController popViewControllerAnimated:YES];
     
 }
 

@@ -36,6 +36,8 @@
     UIBarButtonItem *barButton = [[UIBarButtonItem alloc] initWithCustomView:button];
     self.navigationItem.leftBarButtonItem = barButton;
     
+    [CommonAppUtils styleLight:self.view];
+    
 }
 
 

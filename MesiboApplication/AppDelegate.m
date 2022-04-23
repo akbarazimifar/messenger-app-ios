@@ -482,6 +482,7 @@
     } else {
         if(profile) {
             uint32_t gid = [profile getGroupId];
+            if(gid && ![profile isActive]) return nil;
             UIButton *button =  [UIButton buttonWithType:UIButtonTypeCustom];
             [button setImage:[UIImage imageNamed:gid?@"ic_call_add_white":@"ic_call_white"] forState:UIControlStateNormal];
             [button setFrame:CGRectMake(0, 0, 44, 44)];

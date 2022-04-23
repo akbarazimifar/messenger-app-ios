@@ -131,6 +131,7 @@
     [self initAutoDownload];
     
     [MesiboInstance setSecureConnection:YES];
+    //[MesiboE2EInstance enable:YES];
     [MesiboInstance start];
     
 }
@@ -492,16 +493,16 @@
 }
 
 -(void) logout:(BOOL)forced parent:(id)parent {
+    [MesiboInstance stop];
+    
     if(!forced) {
         [self startLogout:^(int result, NSDictionary *response) {
-            if(MESIBO_RESULT_OK == result)
                 [self logout:YES parent:parent];
         }];
         return;
     }
     
     [MesiboInstance setKey:APNTOKEN_KEY value:@""];
-    [MesiboInstance stop];
     mApnTokenSent = NO;
     mToken = @"";
     mPhone = nil;

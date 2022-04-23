@@ -105,8 +105,38 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" rowHeight="65" id="yrV-i9-8Ju">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" rowHeight="65" id="xjz-AI-1N8">
                                         <rect key="frame" x="0.0" y="200" width="375" height="65"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="xjz-AI-1N8" id="G8t-Y7-To4">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="65"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ic_security_48pt" translatesAutoresizingMaskIntoConstraints="NO" id="Hc3-EZ-UMG">
+                                                    <rect key="frame" x="30" y="17" width="36" height="31"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="36" id="1Qm-1D-dOG"/>
+                                                    </constraints>
+                                                </imageView>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="End-To-End Encryption" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="U82-dI-vKC">
+                                                    <rect key="frame" x="94" y="22" width="265" height="21"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="Hc3-EZ-UMG" firstAttribute="top" secondItem="G8t-Y7-To4" secondAttribute="topMargin" constant="6" id="5mb-fP-yte"/>
+                                                <constraint firstItem="U82-dI-vKC" firstAttribute="leading" secondItem="Hc3-EZ-UMG" secondAttribute="trailing" constant="28" id="TNY-Ds-bWy"/>
+                                                <constraint firstItem="Hc3-EZ-UMG" firstAttribute="centerY" secondItem="G8t-Y7-To4" secondAttribute="centerY" id="hOq-7I-GKQ"/>
+                                                <constraint firstItem="U82-dI-vKC" firstAttribute="trailing" secondItem="G8t-Y7-To4" secondAttribute="trailingMargin" id="izu-GG-yuy"/>
+                                                <constraint firstItem="Hc3-EZ-UMG" firstAttribute="centerY" secondItem="U82-dI-vKC" secondAttribute="centerY" id="ou9-IX-70Y"/>
+                                                <constraint firstItem="Hc3-EZ-UMG" firstAttribute="leading" secondItem="G8t-Y7-To4" secondAttribute="leadingMargin" constant="14" id="rXh-7W-l5U"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" rowHeight="65" id="yrV-i9-8Ju">
+                                        <rect key="frame" x="0.0" y="265" width="375" height="65"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="yrV-i9-8Ju" id="yYo-n6-PVD">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="65"/>
@@ -139,7 +169,7 @@
                                         </connections>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" rowHeight="65" id="bYL-kj-yQk">
-                                        <rect key="frame" x="0.0" y="265" width="375" height="65"/>
+                                        <rect key="frame" x="0.0" y="330" width="375" height="65"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="bYL-kj-yQk" id="PVo-Sx-nVc">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="65"/>
@@ -169,7 +199,7 @@
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" rowHeight="65" id="hQQ-UF-0KY">
-                                        <rect key="frame" x="0.0" y="330" width="375" height="65"/>
+                                        <rect key="frame" x="0.0" y="395" width="375" height="65"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="hQQ-UF-0KY" id="wqv-PE-PJh">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="65"/>
@@ -202,7 +232,7 @@
                                         </connections>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" rowHeight="65" id="jyG-hi-Kd1">
-                                        <rect key="frame" x="0.0" y="395" width="375" height="65"/>
+                                        <rect key="frame" x="0.0" y="460" width="375" height="65"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="jyG-hi-Kd1" id="5l3-r5-Rd8">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="65"/>
@@ -243,6 +273,7 @@
                     <connections>
                         <outlet property="mAboutCell" destination="hQQ-UF-0KY" id="xn6-3i-ylh"/>
                         <outlet property="mDataUsageCell" destination="yrV-i9-8Ju" id="YZU-hc-h1m"/>
+                        <outlet property="mE2EECell" destination="xjz-AI-1N8" id="vLz-io-1oZ"/>
                         <outlet property="mInviteCell" destination="bYL-kj-yQk" id="gdz-nI-RJr"/>
                         <outlet property="mLogoutCell" destination="jyG-hi-Kd1" id="bgJ-hn-l7W"/>
                         <outlet property="mNavigationItem" destination="DAD-dE-Pem" id="vOf-2i-t7b"/>
@@ -803,5 +834,6 @@
         <image name="ic_group_add_48pt" width="48" height="48"/>
         <image name="ic_info" width="24" height="24"/>
         <image name="ic_power_settings_new" width="24" height="24"/>
+        <image name="ic_security_48pt" width="48" height="48"/>
     </resources>
 </document>
