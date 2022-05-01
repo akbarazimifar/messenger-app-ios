@@ -72,6 +72,4 @@ typedef void (^SampleAPI_onResponse)(int result, NSDictionary *response);
 
 -(void) startOnlineAction;
 
--(BOOL) setAPNCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler;
-
 @end

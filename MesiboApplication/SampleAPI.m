@@ -41,7 +41,6 @@
     BOOL mApnTokenSent;
     BOOL mSyncStarted;
     BOOL mInitPhonebook;
-    void (^mAPNCompletionHandler)(UIBackgroundFetchResult);
 }
 
 @end
@@ -566,41 +565,8 @@
 }
 
 
-
--(void) executeAPNCompletion:(double) delayInSeconds {
-    if(!mAPNCompletionHandler)
-        return;
-    
-    if(delayInSeconds < 0.01) {
-        @synchronized (self) {
-            if(mAPNCompletionHandler)
-                mAPNCompletionHandler(UIBackgroundFetchResultNewData);
-            mAPNCompletionHandler = nil;
-        }
-        return;
-    }
-    
-    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
-    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-        //code to be executed on the main queue after delay
-        
-        [self executeAPNCompletion:0];
-    });
-    
-}
-
--(BOOL) setAPNCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
-    [self executeAPNCompletion:0]; // complete existing
-    
-    mAPNCompletionHandler = completionHandler;
-    [MesiboInstance setAppInForeground:nil screenId:-1 foreground:YES];
-    [self executeAPNCompletion:10.0];
-    return YES;
-}
-
 -(void) startOnlineAction {
     [self sendAPNToken]; // this will also be called on online status to ensure that APN token is sent
-    [self executeAPNCompletion:3.0];
 }
 
 -(void) resetDB {

@@ -81,6 +81,5 @@
         //NSLog(@"Complettion done");
         completion();
     }];
-    [MesiboInstance setAppInForeground:nil screenId:-1 foreground:YES];
 }
 @end

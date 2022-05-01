@@ -174,22 +174,13 @@
 
 -(void) application:(UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
     
-    [SampleAPIInstance setAPNCompletionHandler:completionHandler];
 }
 
 
 -(void) application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
     
-    if(application.applicationState == UIApplicationStateInactive) {
-        
-    } else if (application.applicationState == UIApplicationStateBackground) {
-        
-    } else {
-        
-    }
-    
-    [SampleAPIInstance setAPNCompletionHandler:completionHandler];
-    [MesiboInstance setAppInForeground:nil screenId:-1 foreground:YES];
+    [MesiboInstance didReceiveRemoteNotification:userInfo fetchCompletionHandler:completionHandler];
+    return;
     
 }
 
