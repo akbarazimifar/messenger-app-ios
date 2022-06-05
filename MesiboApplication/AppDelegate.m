@@ -276,13 +276,22 @@
         return;
     }
     
+    [MesiboInstance runInThread:YES handler:^{
+        [self launchMesiboUI];
+        
+    }];
+    
     NSString *syncedContacts = [SampleAPIInstance getSyncedContacts];
     
     [ContactUtilsInstance initPhonebook:syncedContacts onPermission: ^(BOOL result) {
         if(!result) {
             [MesiboInstance runInThread:YES handler:^{
                 
-                [AppAlert showDialogue:@"Permissions required!" withTitle:@"Mesibo requires contact permission so that you can communicate with your contacts. You MUST restart App and grant the necessary permissions to continue!"];
+                [AppAlert showDialogue:@"You have not granted contact permission. Mesibo requires contact permission so that you can communicate with your contacts. Go to phone Settings -> Mesibo to grant the necessary permissions to continue! Alternatively, you can reinstall, restart, and then grant permissions." withTitle:@"Permissions required!"  handler:^{
+                    
+                    // do something better depending on your app requirements
+                    exit(0);
+                }];
                 
                 
             }];
