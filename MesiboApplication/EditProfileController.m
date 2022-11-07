@@ -323,9 +323,5 @@
     
 }
 
--(void) Mesibo_OnMessage:(MesiboMessage *)message {
-    
-}
-
 
 @end

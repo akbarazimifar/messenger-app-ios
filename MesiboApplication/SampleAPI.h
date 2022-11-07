@@ -35,6 +35,7 @@
 
 typedef void (^SampleAPI_LogoutBlock)(id parent);
 typedef void (^SampleAPI_onResponse)(int result, NSDictionary *response);
+typedef void (^SampleAPI_onUpdate)(BOOL update);
 
 #define SampleAPIInstance [SampleAPI getInstance]
 

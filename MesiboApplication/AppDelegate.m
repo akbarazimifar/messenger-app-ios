@@ -57,6 +57,7 @@
     _thiz = self;
     
     [MesiboInstance addListener:self];
+    [MesiboUI setListener:self];
     
     if ([application respondsToSelector:@selector(isRegisteredForRemoteNotifications)])
     {
@@ -174,6 +175,7 @@
 
 -(void) application:(UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
     
+    completionHandler(UIBackgroundFetchResultNoData);
 }
 
 
@@ -202,7 +204,7 @@
     return YES;
 }
 
--(void) Mesibo_OnConnectionStatus:(int)status {
+-(void) Mesibo_onConnectionStatus:(int)status {
     Log(@"OnConnectionStatus status: %d", status);
     
     if(status == MESIBO_STATUS_SIGNOUT) {
@@ -253,6 +255,7 @@
     
     MesiboUiOptions *ui = [MesiboUI getUiOptions];
     ui.emptyUserListMessage = @"No active conversations! Click on the message icon to send a message.";
+    ui.preferredLocationApp = LOCATION_APP_PROMPTONCE;
     
     
     UIViewController *mesiboController = [MesiboUI getMesiboUIViewController];
@@ -275,11 +278,6 @@
         }];
         return;
     }
-    
-    [MesiboInstance runInThread:YES handler:^{
-        [self launchMesiboUI];
-        
-    }];
     
     NSString *syncedContacts = [SampleAPIInstance getSyncedContacts];
     
@@ -456,7 +454,7 @@
     
 }
 
--(NSArray *) Mesibo_onGetMenu:(id)parent type:(int) type profile:(MesiboProfile *)profile {
+-(NSArray *) MesiboUI_onGetMenu:(id)parent type:(int) type profile:(MesiboProfile *)profile {
     
     NSArray*btns = nil;
     
@@ -502,7 +500,7 @@
     
 }
 
-- (BOOL)Mesibo_onMenuItemSelected:(id)parent type:(int)type profile:(MesiboProfile *)profile item:(int)item {
+- (BOOL)MesiboUI_onMenuItemSelected:(id)parent type:(int)type profile:(MesiboProfile *)profile item:(int)item {
     // userlist menu are active
     if(type == 0) { // USERLIST
         if(item == 1) {   //item == 0 is reserved
@@ -514,17 +512,11 @@
         uint32_t gid = [profile getGroupId];
         if(item == 0) {
             dispatch_async(dispatch_get_main_queue(), ^{
-            if(gid)
-                [MesiboCallInstance groupCallUi:parent gid:gid video:NO publish:YES];
-            else
-                [MesiboCallInstance callUi:parent address:[profile getAddress] video:NO];
+                [MesiboCallInstance callUi:parent profile:profile video:NO];
             });
         }else if (item ==1) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                if(gid)
-                    [MesiboCallInstance groupCallUi:parent gid:gid video:YES publish:YES];
-                else
-                    [MesiboCallInstance callUi:parent address:[profile getAddress] video:YES];
+                [MesiboCallInstance callUi:parent profile:profile video:YES];
                 
             });
         }

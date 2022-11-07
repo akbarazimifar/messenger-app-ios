@@ -22,6 +22,6 @@
 +(SampleAppNotify *) getInstance;
 
 -(void) notify:(int)type subject:(NSString *)subject message:(NSString *)message;
--(void) notifyMessage:(MesiboParams *)params message:(NSString *)message;
+-(void) notifyMessage:(MesiboMessage *)msg;
 -(void) clear;
 @end

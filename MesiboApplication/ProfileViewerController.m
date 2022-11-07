@@ -89,7 +89,6 @@
     AlbumsData *mImageAlbum;
     AlbumsData *mVideoAlbum;
     AlbumsData *mDocumentAlbum;
-    MesiboParams *mMesiboParam;
     NSMutableArray<MesiboGroupMember *> *mProfiles ;
     BOOL mAdmin;
     int mAdminCount;
@@ -155,16 +154,8 @@
     
     
     [MesiboInstance addListener:self ];
-    mMesiboParam = [[MesiboParams alloc] init];
 
-    if([mUserProfile getGroupId])
-       [mMesiboParam setGroup:[mUserProfile getGroupId]];
-    else
-        [mMesiboParam setPeer:[mUserProfile getAddress]];
-  
-    
-    mReadSession = [MesiboReadSession new];
-    [mReadSession initSession:mMesiboParam.peer groupid:mMesiboParam.groupid query:nil delegate:self];
+    mReadSession = [mUserProfile createReadSession:self];
     [mReadSession enableFiles:YES];
     [mReadSession read:100];
     
@@ -303,19 +294,6 @@
         
 }
 
--(BOOL) Mesibo_onFileTransferProgress:(MesiboFileInfo *)file {
-    if([file getProgress] >= 100) {
-        UIImage *profileImage = [UIImage imageWithContentsOfFile:[file getPath]];
-        if(nil != profileImage ) {
-            [_mProfileImageView setImage:profileImage];
-        }
-        return YES;
-    }
-    
-    return NO;
-}
-
-
 //This hides view and sets height to 0
 -(void) hideView:(UIView *)view {
     view.clipsToBounds = YES;
@@ -390,11 +368,7 @@
 }
 
 
--(void) Mesibo_OnMessage:(MesiboMessage *)message {
-    
-}
-
--(void) Mesibo_onFile:(MesiboParams *)params file:(MesiboFileInfo *)file{
+-(void) Mesibo_onMessage:(MesiboMessage *)message {
     
     // when we see media data then show media card
     if(_mMediaCardHeight.constant == 0) {
@@ -404,23 +378,24 @@
         [_mContentScrollView layoutIfNeeded];
         [self.view layoutIfNeeded];
     }
+    
+    MesiboFile *file = [message getFile];
+    if(!file) return;
+    
     // add data in horizontal picture gallery maximum 35 picturesd
     // fill structure [albumlist]....[photolist]
-    NSLog(@"%@", [file getPath]);
     if(mFavMediaFiles.count < MAX_MEDIA_FILE_THUMBNAIL_GALLERY) {
-        NSString *path = [file getPath];
-        if(path)
-            [mFavMediaFiles addObject:path];
+        [mFavMediaFiles addObject:file.path];
     }
     PhotoData *tempPhotoData = [[PhotoData alloc]init];
     AlbumsData *tempAlbumData ;
     
-    tempPhotoData.mSourcePath = [file getPath];
+    tempPhotoData.mSourcePath = file.path;
     int index = file.type < 3 ?file.type-1: 2;
     tempAlbumData = [mAlbumGalleryData objectAtIndex:index];
     
     if(tempAlbumData.mPhotoGList.count == 0) {
-        tempAlbumData.mAlbumProfilePicPath = [file getPath];
+        tempAlbumData.mAlbumProfilePicPath = file.path;
     }
     
     tempAlbumData.mAlbumPhotoCount++;

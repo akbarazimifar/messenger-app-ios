@@ -58,26 +58,51 @@
     
 }
 
--(void) notifyMessage:(MesiboParams *)params message:(NSString *)message {
-    if(MESIBO_ORIGIN_REALTIME != params.origin || MESIBO_MSGSTATUS_OUTBOX == params.status)
+-(void) notifyMessage:(MesiboMessage *)msg {
+    if(![msg isRealtimeMessage] || [msg isInOutbox])
         return;
-    if(!params.profile) return;
     
-    if([params.profile isMuted])
+    if(!msg.profile) return;
+    
+    if([msg.profile isMuted])
         return;
             
-    NSString *name = [params.profile getName];
+    NSString *name = [msg.profile getName];
     
     if(nil == name)
         return;
     
-    if(params.groupProfile) {
-        if([params.groupProfile isMuted])
+    if(msg.groupProfile) {
+        if([msg.groupProfile isMuted])
             return;
         
-        name = [NSString stringWithFormat:@"%@ @ %@", name, [params.groupProfile getName]];
+        name = [NSString stringWithFormat:@"%@ @ %@", name, [msg.groupProfile getName]];
     }
     
+    NSString *message = msg.message;
+    if(!message || !message.length)
+        message = msg.title;
+    if(!message || !message.length) {
+        if([msg hasImage]) {
+            message = @"Picture";
+        }
+        else if([msg hasVideo]) {
+            message = @"Video";
+        }
+        else if([msg hasAudio]) {
+            message = @"Audio";
+        }
+        else if([msg hasDocument]) {
+            message = @"Attachment";
+        }
+        else if([msg hasLocation]) {
+            message = @"Location";
+        }
+    }
+    
+    if(!message || !message.length) {
+        return;
+    }
     
     [self notify:SAMPLEAPP_NOTIFYTYPE_MESSAGE subject:name message:message];
     return;

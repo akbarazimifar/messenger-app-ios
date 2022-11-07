@@ -29,41 +29,16 @@
     //[MesiboCallInstance setListener:self];
 }
 
--(void) Mesibo_OnMessage:(MesiboParams *)params data:(NSData *)data {
-    if([MesiboInstance isReading:params])
+-(void) Mesibo_onMessage:(MesiboMessage *)msg {
+    if([MesiboInstance isReading:msg])
         return;
     
-    if([data length] == 0) {
-        return;
-    }
-    
+
     //TBD, we need to handle missed and incoming call from here
     //currently done from MesiboCall_onNotifyIncoming (below)
-    if([params isCall]) return;
+    if([msg isCall]) return;
     
-    NSString *message = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-    [SampleAppNotifyInstance notifyMessage:params message:message];
-}
-
--(void) Mesibo_onFile:(MesiboParams *)params file:(MesiboFileInfo *)file {
-    
-    if([MesiboInstance isReading:params])
-        return;
-    
-    [SampleAppNotifyInstance notifyMessage:params message:@"Attachment"];
-    
-}
-
--(void) Mesibo_onLocation:(MesiboParams *)params location:(MesiboLocation *)location {
-    
-    if([MesiboInstance isReading:params])
-        return;
-    
-    [SampleAppNotifyInstance notifyMessage:params message:@"Location"];
-}
-
-// so that we get contact while user has started typing
--(void) Mesibo_onActivity:(MesiboParams *)params activity:(int)activity {
+    [SampleAppNotifyInstance notifyMessage:msg];
 }
 
 -(void) Mesibo_OnConnectionStatus:(int)status {
@@ -118,24 +93,12 @@
     return YES;
 }
 
-- (void)Mesibo_onShowProfile:(id)parent profile:(MesiboProfile *)profile {
+- (void)MesiboUI_onShowProfile:(id)parent profile:(MesiboProfile *)profile {
     [AppUIManager launchProfile:parent profile:profile];
 }
 
--(BOOL) Mesibo_OnMessageFilter:(MesiboParams *)params direction:(int)direction data:(NSData *)data {
-    if(1 == direction)
+-(BOOL) Mesibo_onMessageFilter:(MesiboMessage *)msg {
         return YES;
-    
-    // using it for notifications
-    if(1 != params.type)
-        return YES;
-    
-    if(![data length])
-        return NO;
-    
-    
-    return NO;
-    
 }
 
 -(void) Mesibo_onForeground:(id)parent screenId:(int)screenId foreground:(BOOL)foreground {

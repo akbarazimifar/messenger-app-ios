@@ -268,7 +268,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "457"
             endingLineNumber = "457"
-            landmarkName = "-launchEditProfile"
+            landmarkName = "-MesiboUI_onGetMenu:type:profile:"
             landmarkType = "7">
             <Locations>
                <Location
