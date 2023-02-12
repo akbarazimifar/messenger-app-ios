@@ -266,9 +266,9 @@
             filePath = "MesiboApplication/AppDelegate.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "457"
-            endingLineNumber = "457"
-            landmarkName = "-MesiboUI_onGetMenu:type:profile:"
+            startingLineNumber = "458"
+            endingLineNumber = "458"
+            landmarkName = "-launchEditProfile"
             landmarkType = "7">
             <Locations>
                <Location
@@ -314,8 +314,8 @@
             filePath = "MesiboApplication/AppDelegate.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "455"
-            endingLineNumber = "455"
+            startingLineNumber = "456"
+            endingLineNumber = "456"
             landmarkName = "-launchEditProfile"
             landmarkType = "7">
          </BreakpointContent>

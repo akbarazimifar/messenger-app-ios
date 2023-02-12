@@ -2,8 +2,8 @@
 //  SampleAPI.m
 //  MesiboDevel
 //
-//  Updated by Grace Hu on 23/12/22.
-//  Copyright © 2022 Mesibo. All rights reserved.
+//  Updated by Grace Hu on 23/12/22
+//  Copyright © 2023 Mesibo. All rights reserved.
 //
 
 #import "SampleAPI.h"
@@ -25,7 +25,7 @@
 @interface SampleAPI ( /* class extension */ )
 {
     NSUserDefaults *mUserDefaults;
-    NSString *mToken, *mPhone, *mInvite;
+    NSString *mToken, *mPhone, *mInvite, *mDeviceId;
     uint64_t mContactTimestamp;
     SampleAPI_LogoutBlock mLogoutBlock;
     BOOL mResetSyncedContacts;
@@ -85,6 +85,7 @@
     mContactTimestamp = 0;
     mToken = [mUserDefaults objectForKey:@"token"];
     
+    mDeviceId = [[[UIDevice currentDevice] identifierForVendor]UUIDString];
     
     mPhone = nil;
     mResetSyncedContacts = NO;
@@ -526,6 +527,7 @@
     [post setValue:phone forKey:@"phone"];
     if(nil != code) {
         [post setValue:code forKey:@"otp"];
+        [post setValue:mDeviceId forKey:@"device"];
     }
     
     [self invokeApi:post filePath:nil handler:handler];

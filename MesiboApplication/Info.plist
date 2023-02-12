@@ -29,8 +29,6 @@
 			</array>
 		</dict>
 	</array>
-	<key>UIUserInterfaceStyle</key>
-	<string>Light</string>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
@@ -122,5 +120,7 @@
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 	</array>
+	<key>UIUserInterfaceStyle</key>
+	<string>Light</string>
 </dict>
 </plist>

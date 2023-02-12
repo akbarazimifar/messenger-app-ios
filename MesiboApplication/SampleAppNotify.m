@@ -59,7 +59,7 @@
 }
 
 -(void) notifyMessage:(MesiboMessage *)msg {
-    if(![msg isRealtimeMessage] || [msg isInOutbox])
+    if(![msg isRealtimeMessage] || [msg isInOutbox] || [msg isOutgoing])
         return;
     
     if(!msg.profile) return;

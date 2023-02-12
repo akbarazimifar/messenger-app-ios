@@ -80,6 +80,7 @@
 		88C4EC1521EE3D8C0066F405 /* mesibo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 88C4EC1421EE3D8C0066F405 /* mesibo.framework */; };
 		88DE780A21EDA35000A1876A /* mesibocall.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 88DE780921EDA35000A1876A /* mesibocall.framework */; };
 		88F30B531F7D0BB700803AA8 /* Contacts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 88F30B521F7D0BB700803AA8 /* Contacts.framework */; };
+		88FB3A35299901390090F118 /* UIListener.m in Sources */ = {isa = PBXBuildFile; fileRef = 88FB3A34299901390090F118 /* UIListener.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -200,6 +201,8 @@
 		88D671F82686EB48004B1570 /* EditProfileController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EditProfileController.h; sourceTree = "<group>"; };
 		88DE780921EDA35000A1876A /* mesibocall.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = mesibocall.framework; sourceTree = "<group>"; };
 		88F30B521F7D0BB700803AA8 /* Contacts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Contacts.framework; path = System/Library/Frameworks/Contacts.framework; sourceTree = SDKROOT; };
+		88FB3A33299901390090F118 /* UIListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIListener.h; sourceTree = "<group>"; };
+		88FB3A34299901390090F118 /* UIListener.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIListener.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -333,11 +336,12 @@
 		3EA48FDD1E389A7E00492966 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
-				88D671F82686EB48004B1570 /* EditProfileController.h */,
-				88D671F72686EB48004B1570 /* EditProfileController.m */,
 				3EA48FE11E389AA700492966 /* AppUIManager.h */,
 				3EA48FE21E389AA700492966 /* AppUIManager.m */,
+				88D671F82686EB48004B1570 /* EditProfileController.h */,
+				88D671F72686EB48004B1570 /* EditProfileController.m */,
 				3EA48FF41E389AA700492966 /* Includes.h */,
+				8844A9A121AA601D00489277 /* logs.h */,
 				88292D941E88D1B90008A4F7 /* NSDictionary+NilObject.h */,
 				88292D951E88D1B90008A4F7 /* NSDictionary+NilObject.m */,
 				88B4F3441EBDF3960032E9F2 /* NSLayoutConstraint+Visibiltiy.h */,
@@ -352,11 +356,12 @@
 				88292D971E88D1B90008A4F7 /* SampleAppListeners.m */,
 				88292D981E88D1B90008A4F7 /* SampleAppNotify.h */,
 				88292D991E88D1B90008A4F7 /* SampleAppNotify.m */,
-				88B4F3461EBDF3960032E9F2 /* UIView+Visibility.h */,
-				88B4F3471EBDF3960032E9F2 /* UIView+Visibility.m */,
 				8817FE931FF92FA300ABB3F4 /* SamplePushKitNotify.h */,
 				8817FE941FF92FA300ABB3F4 /* SamplePushKitNotify.m */,
-				8844A9A121AA601D00489277 /* logs.h */,
+				88FB3A33299901390090F118 /* UIListener.h */,
+				88FB3A34299901390090F118 /* UIListener.m */,
+				88B4F3461EBDF3960032E9F2 /* UIView+Visibility.h */,
+				88B4F3471EBDF3960032E9F2 /* UIView+Visibility.m */,
 			);
 			name = Sources;
 			sourceTree = "<group>";
@@ -602,6 +607,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8808FD9626EF4A860040E133 /* EditProfileController.m in Sources */,
+				88FB3A35299901390090F118 /* UIListener.m in Sources */,
 				88292D9C1E88D1B90008A4F7 /* SampleAppNotify.m in Sources */,
 				3EA4900B1E389AA700492966 /* AppAlert.m in Sources */,
 				3EA490101E389AA700492966 /* UIColors.m in Sources */,
@@ -786,7 +792,7 @@
 					"$(PROJECT_DIR)/Frameworks/MesiboUIHelper",
 					"$(PROJECT_DIR)",
 				);
-				MARKETING_VERSION = 1.6.8;
+				MARKETING_VERSION = 2.0.19;
 				PRODUCT_BUNDLE_IDENTIFIER = org.mesibo.messenger;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -817,7 +823,7 @@
 					"$(PROJECT_DIR)/Frameworks/MesiboUIHelper",
 					"$(PROJECT_DIR)",
 				);
-				MARKETING_VERSION = 1.6.8;
+				MARKETING_VERSION = 2.0.19;
 				PRODUCT_BUNDLE_IDENTIFIER = org.mesibo.messenger;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};

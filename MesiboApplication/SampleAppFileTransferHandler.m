@@ -1,7 +1,7 @@
 //
 //  Mesibo_FileTransferHandler.m
 //  Created by Mesibo on 22/09/22.
-//  Copyright © 2022 Mesibo. All rights reserved.
+//  Copyright © 2023 Mesibo. All rights reserved.
 
 #import "SampleAppFileTransferHandler.h"
 #import "SampleAPI.h"

@@ -2,7 +2,7 @@
 //  EditProfileViewController.h
 //  MesiboUIHelper
 //
-//  Copyright © 2022 Mesibo. All rights reserved.
+//  Copyright © 2023 Mesibo. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>

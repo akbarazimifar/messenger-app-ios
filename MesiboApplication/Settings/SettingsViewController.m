@@ -1,9 +1,7 @@
 //
 //  SettingsViewController.m
 //
-//  Created by Anuradha on 28/11/17.
-//  Copyright © 2018 Mesibo. All rights reserved.
-//
+//  Copyright © 2023 Mesibo. All rights reserved.
 
 #import "SettingsViewController.h"
 #import "CommonAppUtils.h"

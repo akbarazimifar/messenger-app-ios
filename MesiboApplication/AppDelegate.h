@@ -1,9 +1,7 @@
-//
 //  AppDelegate.h
 //
 //  Updated by Lee on 14/10/20.
-//  Copyright © 2022 Mesibo. All rights reserved.
-
+//  Copyright © 2023 Mesibo. All rights reserved.
 
 #import <UIKit/UIKit.h>
 #import <mesibo/mesibo.h>

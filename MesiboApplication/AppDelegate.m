@@ -1,5 +1,5 @@
 //  Updated by Lee on 14/10/20.
-//  Copyright © 2021 Mesibo. All rights reserved.
+//  Copyright © 2023 Mesibo. All rights reserved.
 
 
 #import "AppDelegate.h"
@@ -18,6 +18,7 @@
 #import "ContactUtils/ContactUtils.h"
 #import "MesiboCall/MesiboCall.h"
 #import "SamplePushKitNotify.h"
+#import "UIListener.h"
 
 #import <Intents/Intents.h>
 
@@ -48,6 +49,7 @@
     MesiboCall *mesiboCall;
     
     SamplePushKitNotify *pushNotify;
+    UIListener *uiListener;
     
     AppDelegate *_thiz;
 }
@@ -57,7 +59,6 @@
     _thiz = self;
     
     [MesiboInstance addListener:self];
-    [MesiboUI setListener:self];
     
     if ([application respondsToSelector:@selector(isRegisteredForRemoteNotifications)])
     {
@@ -258,7 +259,11 @@
     ui.preferredLocationApp = LOCATION_APP_PROMPTONCE;
     
     
-    UIViewController *mesiboController = [MesiboUI getMesiboUIViewController];
+    uiListener = [UIListener new];
+    
+    MesiboUserListScreenOptions *opts = [MesiboUserListScreenOptions new];
+    
+    UIViewController *mesiboController = [MesiboUI getUserListViewController:opts];
     UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:mesiboController];
     [self setRootController:navigationController];
     
@@ -453,84 +458,6 @@
     [self setRootController:editSelfProfileController];
     
 }
-
--(NSArray *) MesiboUI_onGetMenu:(id)parent type:(int) type profile:(MesiboProfile *)profile {
-    
-    NSArray*btns = nil;
-    
-    if(type == 0) {
-        UIButton *button =  [UIButton buttonWithType:UIButtonTypeCustom];
-        [button setImage:[UIImage imageNamed:@"ic_message_white"] forState:UIControlStateNormal];
-        [button setFrame:CGRectMake(0, 0, 44, 44)];
-        [button setTag:0];
-        
-        UIButton *button1 =  [UIButton buttonWithType:UIButtonTypeCustom];
-        [button1 setImage:[UIImage imageNamed:@"ic_more_vert_white"] forState:UIControlStateNormal];
-        [button1 setFrame:CGRectMake(0, 0, 44, 44)];
-        [button1 setTag:1];
-        
-#if 0
-        UIButton *button2 =  [UIButton buttonWithType:UIButtonTypeCustom];
-        [button2 setImage:[UIImage imageNamed:@"ic_favorite_border_white"] forState:UIControlStateNormal];
-        [button2 setFrame:CGRectMake(0, 0, 44, 44)];
-        [button2 setTag:2];
-#endif
-        
-        btns = @[button, button1];
-    } else {
-        if(profile) {
-            uint32_t gid = [profile getGroupId];
-            if(gid && ![profile isActive]) return nil;
-            UIButton *button =  [UIButton buttonWithType:UIButtonTypeCustom];
-            [button setImage:[UIImage imageNamed:gid?@"ic_call_add_white":@"ic_call_white"] forState:UIControlStateNormal];
-            [button setFrame:CGRectMake(0, 0, 44, 44)];
-            [button setTag:0];
-            
-            UIButton *vbutton =  [UIButton buttonWithType:UIButtonTypeCustom];
-            [vbutton setImage:[UIImage imageNamed:gid?@"ic_videocam_add_white":@"ic_videocam_white"] forState:UIControlStateNormal];
-            [vbutton setFrame:CGRectMake(0, 0, 44, 44)];
-            [vbutton setTag:1];
-            
-            btns = @[vbutton, button];
-        }
-        
-    }
-    
-    return btns;
-    
-}
-
-- (BOOL)MesiboUI_onMenuItemSelected:(id)parent type:(int)type profile:(MesiboProfile *)profile item:(int)item {
-    // userlist menu are active
-    if(type == 0) { // USERLIST
-        if(item == 1) {   //item == 0 is reserved
-            [AppUIManager launchSettings:parent];
-            
-        }
-        
-    } else { // MESSAGEBOX
-        uint32_t gid = [profile getGroupId];
-        if(item == 0) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [MesiboCallInstance callUi:parent profile:profile video:NO];
-            });
-        }else if (item ==1) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [MesiboCallInstance callUi:parent profile:profile video:YES];
-                
-            });
-        }
-        
-        
-    }
-    return true;
-}
-
-- (void)Mesibo_onShowProfile:(id)parent profile:(MesiboProfile *)profile {
-    [AppUIManager launchProfile:parent profile:profile];
-    
-}
-
 
 - (void) Mesibo_onDeleteProfile:(id)parent profile:(MesiboProfile *)profile handler:(Mesibo_onSetGroupHandler)handler{
     

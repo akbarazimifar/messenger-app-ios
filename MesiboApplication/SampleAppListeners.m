@@ -41,7 +41,7 @@
     [SampleAppNotifyInstance notifyMessage:msg];
 }
 
--(void) Mesibo_OnConnectionStatus:(int)status {
+-(void) Mesibo_onConnectionStatus:(NSInteger)status {
     
     NSLog(@"Connection status: %d", status);
     
