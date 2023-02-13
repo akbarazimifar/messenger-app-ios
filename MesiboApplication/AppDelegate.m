@@ -254,7 +254,7 @@
 -(void) launchMesiboUI {
     
     
-    MesiboUiOptions *ui = [MesiboUI getUiOptions];
+    MesiboUiDefaults *ui = [MesiboUI getUiDefaults];
     ui.emptyUserListMessage = @"No active conversations! Click on the message icon to send a message.";
     ui.preferredLocationApp = LOCATION_APP_PROMPTONCE;
     
